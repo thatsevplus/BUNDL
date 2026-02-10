@@ -1,106 +1,149 @@
-<header
-  class="z-50 transition-all duration-500 {% if section.settings.sticky_header %}fixed top-0 left-0 right-0{% else %}relative{% endif %}"
-  data-section-id="{{ section.id }}"
-  data-header
->
-  {%- comment -%} Header inner — transparent over hero when transparent_header, else opaque {%- endcomment -%}
-  <div class="header-bg absolute inset-0 {% if section.settings.transparent_header %}bg-black/0 backdrop-blur-0{% else %}bg-black/70 backdrop-blur-xl{% endif %} transition-all duration-500 pointer-events-none" data-header-bg></div>
+{%- comment -%}
+  Header — Hero Section 3 style (21st.dev).
+  Floating nav: rounded + blur when scrolled. Logo left | Nav center | Profile + Cart right.
+  Logo strip (Powering the best teams) optional above.
+{%- endcomment -%}
 
-  <div class="relative gingr-container flex items-center justify-between py-5 md:py-6">
-
-    {%- comment -%} Left nav (desktop) {%- endcomment -%}
-    <nav class="hidden lg:flex items-center gap-8 flex-1" aria-label="Main navigation left">
-      {% assign links = section.settings.menu.links %}
-      {% assign half = links.size | divided_by: 2 %}
-      {% for link in links limit: half %}
-        <a href="{{ link.url }}" class="text-sm font-semibold uppercase tracking-wider text-white/80 hover:text-white transition-colors no-underline{% if link.active %} text-white{% endif %}">
-          {{ link.title }}
-        </a>
-      {% endfor %}
-    </nav>
-
-    {%- comment -%} Centered Logo — BIG {%- endcomment -%}
-    <a href="{{ routes.root_url }}" class="flex items-center justify-center no-underline flex-shrink-0">
-      {% if section.settings.logo %}
-        {{ section.settings.logo | image_url: width: 300 | image_tag:
-          class: 'h-12 md:h-16 w-auto transition-all duration-300',
-          loading: 'eager',
-          id: 'header-logo'
-        }}
-      {% else %}
-        <span class="text-2xl md:text-3xl font-bold text-white tracking-tight uppercase">{{ shop.name }}</span>
-      {% endif %}
-    </a>
-
-    {%- comment -%} Right nav (desktop) {%- endcomment -%}
-    <nav class="hidden lg:flex items-center gap-8 flex-1 justify-end" aria-label="Main navigation right">
-      {% for link in links offset: half %}
-        <a href="{{ link.url }}" class="text-sm font-semibold uppercase tracking-wider text-white/80 hover:text-white transition-colors no-underline{% if link.active %} text-white{% endif %}">
-          {{ link.title }}
-        </a>
-      {% endfor %}
-
-      {%- comment -%} Predictive search (desktop) {%- endcomment -%}
-      <div class="hidden lg:block ml-4">
-        {% render 'predictive-search' %}
+<header class="header-hero3 left-0 right-0 z-50 px-2 pt-2 {% if section.settings.sticky_header %}sticky top-0{% else %}relative{% endif %}" data-header data-section-id="{{ section.id }}" role="banner">
+  <nav class="header-hero3__nav gingr-container mx-auto max-w-6xl px-4 py-3 transition-all duration-300 lg:px-8 lg:py-4" data-header-inner>
+    {%- comment -%} Logo strip — above main nav when enabled {%- endcomment -%}
+    {%- if section.settings.show_logo_strip -%}
+      <div class="header-hero3__strip flex flex-col items-center gap-4 border-b border-white/10 pb-4 mb-4 md:flex-row md:justify-center md:gap-8">
+        {%- if section.settings.logo_strip_heading != blank -%}
+          <span class="text-xs font-semibold uppercase tracking-wider text-white/50">{{ section.settings.logo_strip_heading }}</span>
+        {%- endif -%}
+        <div class="flex flex-wrap items-center justify-center gap-6 md:gap-8">
+          {%- for block in section.blocks -%}
+            {%- if block.type == 'logo' and block.settings.image != blank -%}
+              <div class="flex items-center justify-center opacity-70 hover:opacity-100 transition-opacity" {{ block.shopify_attributes }} style="max-height: {{ section.settings.logo_strip_height }}px;">
+                {%- if block.settings.link != blank -%}
+                  <a href="{{ block.settings.link }}" target="_blank" rel="noopener">{{ block.settings.image | image_url: width: 160 | image_tag: class: 'h-5 w-auto max-h-8 object-contain', loading: 'lazy', alt: block.settings.image.alt | default: '' }}</a>
+                {%- else -%}
+                  {{ block.settings.image | image_url: width: 160 | image_tag: class: 'h-5 w-auto max-h-8 object-contain', loading: 'lazy', alt: block.settings.image.alt | default: '' }}
+                {%- endif -%}
+              </div>
+            {%- endif -%}
+          {%- endfor -%}
+        </div>
       </div>
-      {%- comment -%} Icons {%- endcomment -%}
-      <div class="flex items-center gap-5 ml-4">
+    {%- endif -%}
+
+    <div class="flex flex-wrap items-center justify-between gap-4 lg:flex-nowrap lg:gap-6">
+      {%- comment -%} Logo left {%- endcomment -%}
+      <a href="{{ routes.root_url }}" class="flex items-center shrink-0 no-underline" aria-label="{{ shop.name }}">
+        {% if section.settings.logo %}
+          {{ section.settings.logo | image_url: width: 200 | image_tag: class: 'h-8 md:h-9 w-auto', loading: 'eager', alt: shop.name }}
+        {% else %}
+          <span class="text-lg font-bold tracking-tight text-white">{{ shop.name }}</span>
+        {% endif %}
+      </a>
+
+      {%- comment -%} Nav center (desktop) {%- endcomment -%}
+      <ul class="hidden lg:flex lg:flex-1 lg:justify-center lg:gap-8" role="list" aria-label="Main navigation">
+        {% for link in section.settings.menu.links %}
+          <li>
+            <a href="{{ link.url }}" class="text-sm text-white/70 hover:text-white transition-colors no-underline{% if link.active %} text-white{% endif %}" {% if link.current %}aria-current="page"{% endif %}>{{ link.title }}</a>
+          </li>
+        {% endfor %}
+      </ul>
+
+      {%- comment -%} Right: search, profile, cart + mobile toggle {%- endcomment -%}
+      <div class="flex items-center gap-2 lg:gap-4 shrink-0">
+        {% if section.settings.enable_search %}
+          <div class="hidden lg:block">{% render 'predictive-search' %}</div>
+        {% endif %}
         {% if shop.customer_accounts_enabled %}
-          <a href="{{ routes.account_url }}" class="text-white/80 hover:text-white transition-colors" aria-label="Account">
+          <a href="{{ routes.account_url }}" class="flex items-center justify-center text-white/70 hover:text-white transition-colors p-2" aria-label="Account">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.5 20.25a8.25 8.25 0 0 1 16.5 0"/></svg>
           </a>
         {% endif %}
-        <a href="{{ routes.cart_url }}" class="relative text-white/80 hover:text-white transition-colors" data-cart-toggle aria-label="Cart">
+        <a href="{{ routes.cart_url }}" class="relative flex items-center justify-center text-white/70 hover:text-white transition-colors p-2" data-cart-toggle aria-label="Cart">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.356-1.993 1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 0 1-1.12-1.243l1.264-12A1.125 1.125 0 0 1 5.513 7.5h12.974c.576 0 1.059.435 1.119 1.007ZM8.625 10.5a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm7.5 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z"/></svg>
-          {% if cart.item_count > 0 %}
-            <span data-cart-count class="absolute -top-1.5 -right-1.5 bg-gingr-yellow text-gingr-navy text-[10px] font-bold rounded-full w-4 h-4 flex items-center justify-center">
-              {{ cart.item_count }}
-            </span>
-          {% else %}
-            <span data-cart-count class="hidden absolute -top-1.5 -right-1.5 bg-gingr-yellow text-gingr-navy text-[10px] font-bold rounded-full w-4 h-4 flex items-center justify-center"></span>
-          {% endif %}
+          <span data-cart-count class="absolute -top-0.5 -right-0.5 min-w-[18px] h-[18px] flex items-center justify-center rounded-full bg-gingr-yellow text-gingr-navy text-[10px] font-bold{% if cart.item_count == 0 %} hidden{% endif %}">{{ cart.item_count }}</span>
         </a>
+        <button type="button" class="flex flex-col gap-1.5 p-2.5 text-white/70 hover:text-white lg:hidden" data-mobile-menu-toggle aria-label="Open menu" aria-expanded="false">
+          <span class="block h-0.5 w-6 bg-current"></span>
+          <span class="block h-0.5 w-6 bg-current"></span>
+          <span class="block h-0.5 w-5 bg-current"></span>
+        </button>
       </div>
-    </nav>
-
-    {%- comment -%} Mobile: icons + hamburger {%- endcomment -%}
-    <div class="flex items-center gap-4 lg:hidden">
-      <a href="{{ routes.cart_url }}" class="relative text-white/80 hover:text-white" data-cart-toggle aria-label="Cart">
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.356-1.993 1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 0 1-1.12-1.243l1.264-12A1.125 1.125 0 0 1 5.513 7.5h12.974c.576 0 1.059.435 1.119 1.007ZM8.625 10.5a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm7.5 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z"/></svg>
-        {% if cart.item_count > 0 %}
-          <span data-cart-count class="absolute -top-1.5 -right-1.5 bg-gingr-yellow text-gingr-navy text-[10px] font-bold rounded-full w-4 h-4 flex items-center justify-center">
-            {{ cart.item_count }}
-          </span>
-        {% else %}
-          <span data-cart-count class="hidden absolute -top-1.5 -right-1.5 bg-gingr-yellow text-gingr-navy text-[10px] font-bold rounded-full w-4 h-4 flex items-center justify-center"></span>
-        {% endif %}
-      </a>
-      <button class="text-white/80 hover:text-white" data-mobile-menu-toggle aria-label="Menu" aria-expanded="false">
-        <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"/></svg>
-      </button>
     </div>
-  </div>
-
-  {%- comment -%} Mobile menu — full screen overlay {%- endcomment -%}
-  <nav class="fixed inset-0 z-[60] bg-black/95 backdrop-blur-xl hidden flex-col items-center justify-center gap-8" data-mobile-menu aria-label="Mobile navigation">
-    <button class="absolute top-6 right-6 text-white/80 hover:text-white" data-mobile-menu-close aria-label="Close menu">
-      <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6 18 18 6M6 6l12 12"/></svg>
-    </button>
-    {% for link in section.settings.menu.links %}
-      <a href="{{ link.url }}" class="text-2xl font-bold text-white/80 hover:text-white uppercase tracking-wider no-underline transition-colors">
-        {{ link.title }}
-      </a>
-    {% endfor %}
-    {% if shop.customer_accounts_enabled %}
-      <a href="{{ routes.account_url }}" class="text-lg font-semibold text-white/60 hover:text-white uppercase tracking-wider no-underline transition-colors">Account</a>
-    {% endif %}
   </nav>
 </header>
 
-{%- if section.settings.sticky_header -%}
-<div class="h-[72px] md:h-[88px]" data-header-spacer></div>
-{%- endif -%}
+{%- comment -%} Mobile menu — dropdown panel (Hero Section 3 style) {%- endcomment -%}
+<div class="fixed inset-0 z-[60] hidden" data-mobile-menu aria-hidden="true">
+  <div class="absolute inset-0 bg-black/50 backdrop-blur-sm" data-mobile-menu-close></div>
+  <div class="absolute right-0 top-0 bottom-0 w-full max-w-sm bg-[#0f0f0f] border-l border-white/10 shadow-2xl p-6 flex flex-col">
+    <div class="flex justify-between items-center mb-8">
+      <span class="text-lg font-bold text-white">{{ shop.name }}</span>
+      <button type="button" class="p-2 text-white/70 hover:text-white" data-mobile-menu-close aria-label="Close menu">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6 18 18 6M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <ul class="space-y-6" role="list">
+      {% for link in section.settings.menu.links %}
+        <li><a href="{{ link.url }}" class="text-base text-white/80 hover:text-white no-underline">{{ link.title }}</a></li>
+      {% endfor %}
+    </ul>
+    {% if shop.customer_accounts_enabled %}
+      <a href="{{ routes.account_url }}" class="mt-6 text-sm font-medium text-white/70 hover:text-white no-underline">Account</a>
+    {% endif %}
+  </div>
+</div>
+
+<style>
+  .header-hero3__nav {
+    {% if section.settings.transparent_header %}
+    background: transparent;
+    {% else %}
+    background: rgba(0,0,0,0.7);
+    backdrop-filter: blur(16px);
+    border-radius: 1rem;
+    border: 1px solid rgba(255,255,255,0.08);
+    {% endif %}
+  }
+
+  [data-header].is-scrolled .header-hero3__nav {
+    background: rgba(10,10,10,0.85);
+    backdrop-filter: blur(20px);
+    border-radius: 1rem;
+    border: 1px solid rgba(255,255,255,0.1);
+    max-width: 56rem;
+    padding-left: 1.25rem;
+    padding-right: 1.25rem;
+  }
+
+  @media (min-width: 1024px) {
+    [data-header].is-scrolled .header-hero3__nav {
+      padding-left: 1.5rem;
+      padding-right: 1.5rem;
+    }
+  }
+</style>
+
+<script>
+  (function() {
+    var toggle = document.querySelector('[data-mobile-menu-toggle]');
+    var menu = document.querySelector('[data-mobile-menu]');
+    var closeBtns = document.querySelectorAll('[data-mobile-menu-close]');
+    if (toggle && menu) {
+      toggle.addEventListener('click', function() {
+        menu.classList.remove('hidden');
+        menu.setAttribute('aria-hidden', 'false');
+        toggle.setAttribute('aria-expanded', 'true');
+      });
+      closeBtns.forEach(function(btn) {
+        btn.addEventListener('click', function() {
+          menu.classList.add('hidden');
+          menu.setAttribute('aria-hidden', 'true');
+          toggle.setAttribute('aria-expanded', 'false');
+        });
+      });
+    }
+  })();
+</script>
+
 
 {% schema %}
 {
@@ -115,9 +158,9 @@
     {
       "type": "checkbox",
       "id": "transparent_header",
-      "label": "Transparent over hero",
-      "info": "Header starts transparent and becomes opaque on scroll.",
-      "default": true
+      "label": "Transparent until scroll",
+      "default": true,
+      "info": "Nav gets rounded + blur after scrolling"
     },
     {
       "type": "image_picker",
@@ -125,20 +168,53 @@
       "label": "Logo"
     },
     {
-      "type": "range",
-      "id": "logo_height",
-      "min": 24,
-      "max": 80,
-      "step": 4,
-      "unit": "px",
-      "label": "Logo height (desktop)",
-      "default": 64
-    },
-    {
       "type": "link_list",
       "id": "menu",
       "label": "Menu",
       "default": "main-menu"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_search",
+      "label": "Show search",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Logo strip"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_logo_strip",
+      "label": "Show logo strip",
+      "default": false,
+      "info": "e.g. Powering the best teams"
+    },
+    {
+      "type": "text",
+      "id": "logo_strip_heading",
+      "label": "Strip heading",
+      "default": "Powering the best teams"
+    },
+    {
+      "type": "range",
+      "id": "logo_strip_height",
+      "min": 16,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "label": "Logo height in strip",
+      "default": 24
+    }
+  ],
+  "blocks": [
+    {
+      "type": "logo",
+      "name": "Logo",
+      "settings": [
+        { "type": "image_picker", "id": "image", "label": "Logo image" },
+        { "type": "url", "id": "link", "label": "Link (optional)" }
+      ]
     }
   ]
 }
