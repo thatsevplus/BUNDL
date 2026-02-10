@@ -52,9 +52,9 @@ my-health-theme/
       cart-drawer.js
       bundle-selector.js
       subscription-ui.js
-      qty-breaks.js
       predictive-search.js
       accessibility.js
+      (qty-breaks: géré par bundle-selector)
     icons/
   scripts/
     build.mjs                  # esbuild + postcss/tailwind
@@ -83,7 +83,7 @@ my-health-theme/
 
 ## 3) Sections MVP (le strict nécessaire pour vendre)
 ### Product (PDP) — MUST HAVE
-1) sections/main-product-health.liquid
+1) sections/main-product.liquid
    - Galerie média (images/video)
    - Titre + prix + badges (ex: "Sugar-free", "Vegan")
    - Bundle selector (packs 1/6/12) + économies
@@ -92,7 +92,7 @@ my-health-theme/
    - Delivery / returns / FAQ micro
    - Trust row (paiement, livraison)
 
-2) sections/product-benefits-ingredients.liquid
+2) sections/product-benefits.liquid
    - Bénéfices (metafields)
    - Ingrédients + nutrition (metafields)
    - Allergènes (metafields)
@@ -105,13 +105,13 @@ my-health-theme/
    - Un conteneur stylé pour app reviews (block app) + fallback simple
 
 ### Collection — MUST HAVE
-5) sections/main-collection-health.liquid
+5) sections/main-collection.liquid
    - Filtre/tri natif Shopify
    - Cards produits: badges + prix pack visible
    - Quick add (optionnel MVP) OU lien PDP (si variantes complexes)
 
 ### Home — MVP
-6) sections/hero-health.liquid
+6) sections/hero.liquid
 7) sections/featured-collection-health.liquid
 8) sections/value-props.liquid (USP: livraison, clean ingredients, etc.)
 9) sections/bundle-highlight.liquid (mise en avant packs + économie)
@@ -119,9 +119,10 @@ my-health-theme/
 11) sections/faq.liquid
 
 ### Global
-12) sections/header-health.liquid
-13) sections/footer-health.liquid
+12) sections/header.liquid
+13) sections/footer.liquid
 14) sections/announcement-bar.liquid
+15) sections/custom-liquid.liquid (app / Liquid personnalisé)
 
 ---
 
@@ -134,7 +135,7 @@ my-health-theme/
 - snippets/bundle-price.liquid
 - snippets/subscription-slot.liquid
 - snippets/cart-drawer.liquid
-- snippets/a11y-focus-trap.liquid
+- snippets/predictive-search.liquid (form + results container; JS: predictive-search.js)
 
 ---
 

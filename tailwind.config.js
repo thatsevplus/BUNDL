@@ -8,6 +8,15 @@ module.exports = {
   theme: {
     extend: {
       colors: {
+        // White-label: driven by theme settings (css-variables.liquid)
+        brand: {
+          primary: 'var(--color-primary)',
+          accent: 'var(--color-accent)',
+          background: 'var(--color-background)',
+          heading: 'var(--text-heading)',
+          body: 'var(--text-body)',
+          subheading: 'var(--text-subheading)',
+        },
         gingr: {
           navy: '#0b0f0e',
           yellow: '#ffe14e',

@@ -1,6 +1,6 @@
 import { execSync } from 'child_process';
 import { build, context } from 'esbuild';
-import { writeFileSync, mkdirSync } from 'fs';
+import { copyFileSync, watch } from 'fs';
 import { resolve, dirname } from 'path';
 import { fileURLToPath } from 'url';
 
@@ -8,8 +8,17 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const root = resolve(__dirname, '..');
 const isWatch = process.argv.includes('--watch');
 
-// --- CSS (Tailwind via PostCSS CLI) ---
+const criticalSrc = resolve(root, 'src/css/critical.css');
+const criticalOut = resolve(root, 'gingr_theme/assets/critical.css');
+
+function buildCriticalCSS() {
+  copyFileSync(criticalSrc, criticalOut);
+  console.log('[css] critical.css copied.');
+}
+
+// --- CSS (Tailwind + critical) ---
 function buildCSS() {
+  buildCriticalCSS();
   console.log('[css] Building Tailwind…');
   execSync(
     `npx tailwindcss -i ./src/css/main.css -o ./gingr_theme/assets/main.css --minify`,
@@ -33,6 +42,11 @@ async function run() {
   buildCSS();
 
   if (isWatch) {
+    watch(criticalSrc, () => {
+      buildCriticalCSS();
+    });
+    console.log('[css] Watching critical.css…');
+
     // Watch JS
     const ctx = await context(jsConfig);
     await ctx.watch();
