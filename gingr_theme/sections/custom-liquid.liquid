@@ -1,0 +1,37 @@
+{%- comment -%}
+  Custom Liquid — App integration / custom code.
+  Merchants can add Liquid or embed app blocks here.
+{%- endcomment -%}
+
+<section class="section-padding" data-section-id="{{ section.id }}">
+  <div class="gingr-container">
+    {% if section.settings.custom_liquid != blank %}
+      <div class="rte text-body">
+        {{ section.settings.custom_liquid }}
+      </div>
+    {% endif %}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Custom Liquid",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "liquid",
+      "id": "custom_liquid",
+      "label": "Custom Liquid",
+      "info": "Add Liquid code or use for app embeds."
+    }
+  ],
+  "presets": [
+    {
+      "name": "Custom Liquid"
+    }
+  ],
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  }
+}
+{% endschema %}

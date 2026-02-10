@@ -1,6 +1,6 @@
 {%- comment -%}
-  GINGR — Main Collection Section
-  Grid with product cards, native filtering/sorting
+  Main Collection Section — Grid with product cards, native filtering/sorting
+  White-label: works with any collection; metafields optional (health.*).
 {%- endcomment -%}
 
 <section class="section-padding" data-section-id="{{ section.id }}">
@@ -17,25 +17,24 @@
         </div>
       {% endif %}
 
-      <h1 class="text-2xl md:text-3xl font-bold text-gingr-navy">{{ collection.title }}</h1>
+      <h1 class="text-2xl md:text-3xl font-bold text-heading">{{ collection.title }}</h1>
 
       {% if collection.metafields.health.collection_intro.value %}
-        <div class="prose prose-sm text-gray-600 mt-2 max-w-2xl">
+        <div class="prose prose-sm text-body mt-2 max-w-2xl">
           {{ collection.metafields.health.collection_intro.value }}
         </div>
       {% elsif collection.description != blank %}
-        <p class="text-sm text-gray-600 mt-2 max-w-2xl">{{ collection.description }}</p>
+        <p class="text-sm text-body mt-2 max-w-2xl">{{ collection.description }}</p>
       {% endif %}
     </div>
 
     {%- comment -%} Filter & sort bar {%- endcomment -%}
-    <div class="flex flex-wrap items-center justify-between gap-4 mb-6 pb-4 border-b border-gray-100">
-      <p class="text-sm text-gray-500">{{ collection.products_count }} products</p>
+    <div class="flex flex-wrap items-center justify-between gap-4 mb-6 pb-4 border-b border-white/10">
+      <p class="text-sm text-subheading">{{ 'collection.products_count' | t: count: collection.products_count }}</p>
 
-      {%- comment -%} Native sort {%- endcomment -%}
       <div class="flex items-center gap-2">
-        <label for="sort-by" class="text-sm text-gray-500">Sort by</label>
-        <select id="sort-by" class="text-sm border border-gray-200 rounded-lg px-3 py-1.5 focus:ring-2 focus:ring-gingr-navy focus:border-transparent"
+        <label for="sort-by" class="text-sm text-subheading">{{ 'collection.sort_by' | t }}</label>
+        <select id="sort-by" class="text-sm border border-white/20 rounded-lg px-3 py-1.5 bg-transparent text-body focus:ring-2 focus:ring-gingr-navy focus:border-transparent"
           onchange="window.location.href = this.value"
         >
           {% assign sort_options = 'manual,best-selling,title-ascending,title-descending,price-ascending,price-descending,created-ascending,created-descending' | split: ',' %}
@@ -44,14 +43,14 @@
               {% if collection.sort_by == option %}selected{% endif %}
             >
               {% case option %}
-                {% when 'manual' %}Featured
-                {% when 'best-selling' %}Best selling
-                {% when 'title-ascending' %}A-Z
-                {% when 'title-descending' %}Z-A
-                {% when 'price-ascending' %}Price: low to high
-                {% when 'price-descending' %}Price: high to low
-                {% when 'created-ascending' %}Oldest
-                {% when 'created-descending' %}Newest
+                {% when 'manual' %}{{ 'collection.sort_featured' | t }}
+                {% when 'best-selling' %}{{ 'collection.sort_best_selling' | t }}
+                {% when 'title-ascending' %}{{ 'collection.sort_az' | t }}
+                {% when 'title-descending' %}{{ 'collection.sort_za' | t }}
+                {% when 'price-ascending' %}{{ 'collection.sort_price_asc' | t }}
+                {% when 'price-descending' %}{{ 'collection.sort_price_desc' | t }}
+                {% when 'created-ascending' %}{{ 'collection.sort_oldest' | t }}
+                {% when 'created-descending' %}{{ 'collection.sort_newest' | t }}
               {% endcase %}
             </option>
           {% endfor %}
@@ -67,18 +66,17 @@
         {% endfor %}
       </div>
 
-      {%- comment -%} Pagination {%- endcomment -%}
       {% if paginate.pages > 1 %}
         <nav class="flex justify-center items-center gap-2 mt-10" aria-label="Pagination">
           {% if paginate.previous %}
-            <a href="{{ paginate.previous.url }}" class="px-3 py-2 rounded-lg text-sm text-gingr-navy hover:bg-gray-100 no-underline">
-              &larr; Prev
+            <a href="{{ paginate.previous.url }}" class="px-3 py-2 rounded-lg text-sm text-heading hover:bg-white/10 no-underline">
+              Prev
             </a>
           {% endif %}
 
           {% for part in paginate.parts %}
             {% if part.is_link %}
-              <a href="{{ part.url }}" class="w-9 h-9 flex items-center justify-center rounded-lg text-sm text-gingr-navy hover:bg-gray-100 no-underline">
+              <a href="{{ part.url }}" class="w-9 h-9 flex items-center justify-center rounded-lg text-sm text-heading hover:bg-white/10 no-underline">
                 {{ part.title }}
               </a>
             {% else %}
@@ -87,7 +85,7 @@
                   {{ part.title }}
                 </span>
               {% else %}
-                <span class="w-9 h-9 flex items-center justify-center text-sm text-gray-400">
+                <span class="w-9 h-9 flex items-center justify-center text-sm text-subheading">
                   {{ part.title }}
                 </span>
               {% endif %}
@@ -95,8 +93,8 @@
           {% endfor %}
 
           {% if paginate.next %}
-            <a href="{{ paginate.next.url }}" class="px-3 py-2 rounded-lg text-sm text-gingr-navy hover:bg-gray-100 no-underline">
-              Next &rarr;
+            <a href="{{ paginate.next.url }}" class="px-3 py-2 rounded-lg text-sm text-heading hover:bg-white/10 no-underline">
+              Next
             </a>
           {% endif %}
         </nav>

@@ -1,0 +1,179 @@
+{%- comment -%}
+  Product Benefits — What's inside, benefits, nutrition.
+  Block-based (ingredient, certification) with metafield fallback for health.*
+{%- endcomment -%}
+
+<section class="section-padding bg-white/5" data-section-id="{{ section.id }}">
+  <div class="gingr-container">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
+
+      {%- comment -%} Benefits (blocks or metafields) {%- endcomment -%}
+      <div>
+        <h2 class="text-xl font-bold text-heading mb-6">{% if section.settings.heading_benefits != blank %}{{ section.settings.heading_benefits }}{% else %}{{ 'product.why_it_works' | t }}{% endif %}</h2>
+        {% assign benefit_blocks = section.blocks | where: 'type', 'benefit' %}
+        {% if benefit_blocks.size > 0 %}
+          <ul class="space-y-4">
+            {% for block in benefit_blocks %}
+              <li class="flex items-start gap-3" {{ block.shopify_attributes }}>
+                <span class="flex-shrink-0 w-6 h-6 rounded-full bg-brand-primary/20 flex items-center justify-center mt-0.5 text-brand-primary">
+                  {% render 'icon', name: 'check', size: '14' %}
+                </span>
+                <span class="text-sm text-body leading-relaxed">{{ block.settings.text }}</span>
+              </li>
+            {% endfor %}
+          </ul>
+        {% elsif product.metafields.health.benefits.value %}
+          <ul class="space-y-4">
+            {% for benefit in product.metafields.health.benefits.value %}
+              <li class="flex items-start gap-3">
+                <span class="flex-shrink-0 w-6 h-6 rounded-full bg-brand-primary/20 flex items-center justify-center mt-0.5 text-brand-primary">
+                  {% render 'icon', name: 'check', size: '14' %}
+                </span>
+                <span class="text-sm text-body leading-relaxed">{{ benefit }}</span>
+              </li>
+            {% endfor %}
+          </ul>
+        {% else %}
+          <p class="text-sm text-subheading">{{ 'product.benefits_coming' | t }}</p>
+        {% endif %}
+      </div>
+
+      {%- comment -%} Ingredients (blocks or metafields) + certifications {%- endcomment -%}
+      <div>
+        <h2 class="text-xl font-bold text-heading mb-6">{% if section.settings.heading_ingredients != blank %}{{ section.settings.heading_ingredients }}{% else %}{{ 'product.whats_inside' | t }}{% endif %}</h2>
+
+        {% assign ingredient_blocks = section.blocks | where: 'type', 'ingredient' %}
+        {% if ingredient_blocks.size > 0 %}
+          <div class="space-y-4 mb-6">
+            {% for block in ingredient_blocks %}
+              <div class="flex gap-4" {{ block.shopify_attributes }}>
+                {% if block.settings.image %}
+                  <div class="w-16 h-16 rounded-lg overflow-hidden flex-shrink-0">
+                    {{ block.settings.image | image_url: width: 128 | image_tag: class: 'w-full h-full object-cover', loading: 'lazy' }}
+                  </div>
+                {% endif %}
+                <div>
+                  <h3 class="text-sm font-semibold text-heading">{{ block.settings.name }}</h3>
+                  {% if block.settings.benefit != blank %}
+                    <div class="rte text-sm text-body mt-1">{{ block.settings.benefit }}</div>
+                  {% endif %}
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+        {% elsif product.metafields.health.ingredients.value %}
+          <div class="prose prose-sm text-body mb-6">
+            {{ product.metafields.health.ingredients.value }}
+          </div>
+        {% endif %}
+
+        {% assign cert_blocks = section.blocks | where: 'type', 'certification' %}
+        {% if cert_blocks.size > 0 %}
+          <div class="flex flex-wrap gap-3 mb-6">
+            {% for block in cert_blocks %}
+              <div class="flex items-center gap-2" {{ block.shopify_attributes }}>
+                {% if block.settings.badge %}
+                  {{ block.settings.badge | image_url: width: 64 | image_tag: class: 'h-8 w-auto', loading: 'lazy' }}
+                {% endif %}
+                {% if block.settings.label != blank %}
+                  <span class="text-xs text-body">{{ block.settings.label }}</span>
+                {% endif %}
+              </div>
+            {% endfor %}
+          </div>
+        {% endif %}
+
+        <div class="space-y-2">
+          {% if product.metafields.health.sugar_g.value %}
+            <div class="flex justify-between text-sm py-2 border-b border-white/10">
+              <span class="text-subheading">Sugar</span>
+              <span class="font-medium text-body">{{ product.metafields.health.sugar_g.value }}g</span>
+            </div>
+          {% endif %}
+          {% if product.metafields.health.caffeine_mg.value %}
+            <div class="flex justify-between text-sm py-2 border-b border-white/10">
+              <span class="text-subheading">Caffeine</span>
+              <span class="font-medium text-body">{{ product.metafields.health.caffeine_mg.value }}mg</span>
+            </div>
+          {% endif %}
+          {% if product.metafields.health.flavor_notes.value %}
+            <div class="flex justify-between text-sm py-2 border-b border-white/10">
+              <span class="text-subheading">Taste</span>
+              <span class="font-medium text-body">{{ product.metafields.health.flavor_notes.value }}</span>
+            </div>
+          {% endif %}
+        </div>
+
+        {% if product.metafields.health.nutrition_table.value %}
+          <details class="mt-4">
+            <summary class="text-sm font-medium text-heading cursor-pointer hover:underline">{{ 'product.full_nutrition' | t }}</summary>
+            <div class="prose prose-sm text-body mt-3">
+              {{ product.metafields.health.nutrition_table.value }}
+            </div>
+          </details>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Product Benefits",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading_benefits",
+      "label": "Benefits heading",
+      "default": "Why it works"
+    },
+    {
+      "type": "text",
+      "id": "heading_ingredients",
+      "label": "Ingredients heading",
+      "default": "What's inside"
+    },
+    {
+      "type": "select",
+      "id": "layout",
+      "label": "Layout",
+      "options": [
+        { "value": "grid", "label": "Grid" },
+        { "value": "list", "label": "List" }
+      ],
+      "default": "grid"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "benefit",
+      "name": "Benefit",
+      "settings": [
+        { "type": "textarea", "id": "text", "label": "Benefit text" }
+      ]
+    },
+    {
+      "type": "ingredient",
+      "name": "Ingredient",
+      "settings": [
+        { "type": "text", "id": "name", "label": "Ingredient name" },
+        { "type": "image_picker", "id": "image", "label": "Image" },
+        { "type": "richtext", "id": "benefit", "label": "Benefit description" }
+      ]
+    },
+    {
+      "type": "certification",
+      "name": "Certification",
+      "settings": [
+        { "type": "image_picker", "id": "badge", "label": "Badge image" },
+        { "type": "text", "id": "label", "label": "Label" }
+      ]
+    }
+  ],
+  "presets": [
+    { "name": "Product Benefits" }
+  ],
+  "disabled_on": { "groups": ["header", "footer"] }
+}
+{% endschema %}

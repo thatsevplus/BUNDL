@@ -1,5 +1,5 @@
 {%- comment -%}
-  GINGR — Hero section v2
+  Hero section 
   Bold product showcase with testimonial feel.
   User can choose BG color per product or leave transparent.
 {%- endcomment -%}
@@ -7,8 +7,17 @@
 {%- assign bg_color = section.settings.bg_color | default: 'transparent' -%}
 {%- assign bg_gradient_end = section.settings.bg_gradient_end -%}
 
+{% assign height_class = 'min-h-[60vh] md:min-h-[70vh]' %}
+{% case section.settings.height %}
+  {% when 'small' %}  {% assign height_class = 'min-h-[50vh] md:min-h-[60vh]' %}
+  {% when 'medium' %} {% assign height_class = 'min-h-[70vh] md:min-h-[80vh]' %}
+  {% when 'large' %}  {% assign height_class = 'min-h-[85vh] md:min-h-[90vh]' %}
+  {% when 'fullscreen' %} {% assign height_class = 'min-h-screen' %}
+  {% else %}          {% assign height_class = 'min-h-[85vh] md:min-h-[90vh]' %}
+{% endcase %}
+{% assign text_align = section.settings.text_position | default: 'left' %}
 <section
-  class="relative overflow-hidden min-h-[85vh] md:min-h-[90vh] flex items-center"
+  class="relative overflow-hidden {{ height_class }} flex items-center"
   data-section-id="{{ section.id }}"
   style="
     {% if section.settings.bg_gradient_enabled and bg_gradient_end != blank %}
@@ -26,14 +35,17 @@
         style: 'opacity: 0.15;',
         loading: 'eager'
       }}
+      {% if section.settings.overlay_opacity > 0 %}
+        <div class="absolute inset-0 bg-black" style="opacity: {{ section.settings.overlay_opacity | times: 0.01 }};"></div>
+      {% endif %}
     </div>
   {% endif %}
 
   <div class="relative gingr-container w-full">
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
+    <div class="grid grid-cols-1 {% if section.settings.show_product %}lg:grid-cols-2{% endif %} gap-8 lg:gap-12 items-center">
 
-      {%- comment -%} Left: Text content {%- endcomment -%}
-      <div class="text-center lg:text-left order-2 lg:order-1">
+      {%- comment -%} Text content — alignment from text_position {%- endcomment -%}
+      <div class="order-2 lg:order-1 {% if text_align == 'center' %}text-center mx-auto{% elsif text_align == 'right' %}text-right lg:order-2 lg:col-start-2{% else %}text-center lg:text-left{% endif %}">
         {% if section.settings.eyebrow != blank %}
           <p class="inline-block text-xs font-bold uppercase tracking-[0.2em] px-4 py-1.5 rounded-full border mb-6 text-subheading" style="border-color: color-mix(in srgb, var(--text-subheading) 40%, transparent);">
             {{ section.settings.eyebrow }}
@@ -54,7 +66,7 @@
         {% endif %}
 
         {%- comment -%} CTA buttons {%- endcomment -%}
-        <div class="flex flex-wrap gap-4 mt-8 justify-center lg:justify-start">
+        <div class="flex flex-wrap gap-4 mt-8 {% if text_align == 'center' %}justify-center{% elsif text_align == 'right' %}justify-end lg:justify-end{% else %}justify-center lg:justify-start{% endif %}">
           {% if section.settings.cta_text != blank %}
             <a href="{{ section.settings.cta_link }}" class="btn-secondary text-base px-8 py-4 no-underline">
               {{ section.settings.cta_text }}
@@ -69,7 +81,7 @@
 
         {%- comment -%} Social proof line — avatars from blocks (image or emoji) {%- endcomment -%}
         {% if section.settings.social_proof_text != blank %}
-          <div class="flex items-center gap-3 mt-8 justify-center lg:justify-start">
+          <div class="flex items-center gap-3 mt-8 {% if text_align == 'center' %}justify-center{% elsif text_align == 'right' %}justify-end{% else %}justify-center lg:justify-start{% endif %}">
             <div class="flex -space-x-2">
               {% assign avatar_blocks = section.blocks | where: 'type', 'avatar' %}
               {% if avatar_blocks.size > 0 %}
@@ -93,7 +105,8 @@
         {% endif %}
       </div>
 
-      {%- comment -%} Right: Product image — big, bold, overflow {%- endcomment -%}
+      {%- comment -%} Right: Product image (optional) {%- endcomment -%}
+      {% if section.settings.show_product %}
       <div class="relative order-1 lg:order-2 flex items-center justify-center">
         {% if section.settings.product_image %}
           <div class="relative w-full max-w-md lg:max-w-lg mx-auto">
@@ -117,6 +130,7 @@
           </div>
         {% endif %}
       </div>
+      {% endif %}
     </div>
   </div>
 </section>
@@ -126,6 +140,35 @@
   "name": "Hero",
   "tag": "section",
   "settings": [
+    {
+      "type": "select",
+      "id": "height",
+      "label": "Section height",
+      "options": [
+        { "value": "small", "label": "Small" },
+        { "value": "medium", "label": "Medium" },
+        { "value": "large", "label": "Large" },
+        { "value": "fullscreen", "label": "Fullscreen" }
+      ],
+      "default": "large"
+    },
+    {
+      "type": "select",
+      "id": "text_position",
+      "label": "Text position",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "center", "label": "Center" },
+        { "value": "right", "label": "Right" }
+      ],
+      "default": "left"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_product",
+      "label": "Show product image",
+      "default": true
+    },
     {
       "type": "header",
       "content": "Background"
@@ -158,6 +201,16 @@
       "type": "image_picker",
       "id": "image",
       "label": "Background image (optional)"
+    },
+    {
+      "type": "range",
+      "id": "overlay_opacity",
+      "min": 0,
+      "max": 80,
+      "step": 5,
+      "unit": "%",
+      "label": "Image overlay darkness",
+      "default": 0
     },
     {
       "type": "header",

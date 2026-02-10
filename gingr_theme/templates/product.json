@@ -1,11 +1,11 @@
 {
   "sections": {
     "main": {
-      "type": "main-product-health",
+      "type": "main-product",
       "settings": {}
     },
     "benefits": {
-      "type": "product-benefits-ingredients",
+      "type": "product-benefits",
       "settings": {}
     },
     "routine": {
@@ -18,15 +18,14 @@
       },
       "block_order": ["m1", "m2", "m3"]
     },
+    "complementary": {
+      "type": "product-complementary",
+      "settings": { "heading": "Complete your routine" }
+    },
     "reviews": {
       "type": "product-reviews-slot",
       "settings": {}
     }
   },
-  "order": [
-    "main",
-    "benefits",
-    "routine",
-    "reviews"
-  ]
+  "order": ["main", "benefits", "routine", "complementary", "reviews"]
 }

@@ -1,0 +1,35 @@
+{%- comment -%}
+  Predictive search form + results container.
+  JS (predictive-search.js) fetches /search/suggest.json and renders results here.
+  Include in header: {% render 'predictive-search' %}
+{%- endcomment -%}
+
+<div class="predictive-search relative" data-predictive-search>
+  <form action="{{ routes.search_url }}" method="get" role="search" class="flex items-center">
+    <label for="predictive-search-input" class="sr-only">{{ 'search.placeholder' | t }}</label>
+    <input
+      type="search"
+      id="predictive-search-input"
+      name="q"
+      value="{{ search.terms | escape }}"
+      placeholder="{{ 'search.placeholder' | t }}"
+      autocomplete="off"
+      class="w-full min-w-[120px] max-w-[200px] px-3 py-1.5 text-sm rounded-lg bg-white/10 border border-white/20 text-white placeholder-white/50 focus:ring-2 focus:ring-gingr-yellow focus:border-transparent"
+      data-predictive-search-input
+      aria-expanded="false"
+      aria-controls="predictive-search-results"
+      aria-autocomplete="list"
+    >
+    <button type="submit" class="ml-2 p-1.5 text-white/80 hover:text-white" aria-label="{{ 'search.submit' | t }}">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"/></svg>
+    </button>
+  </form>
+  <div
+    id="predictive-search-results"
+    class="absolute top-full left-0 right-0 mt-1 py-2 bg-black/95 backdrop-blur-xl rounded-xl border border-white/10 shadow-xl max-h-[70vh] overflow-y-auto hidden z-50"
+    data-predictive-search-results
+    role="listbox"
+  >
+    <div data-predictive-search-results-inner></div>
+  </div>
+</div>

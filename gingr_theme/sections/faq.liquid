@@ -1,20 +1,21 @@
 {%- comment -%}
-  GINGR — FAQ section
-  Accordion style — dark theme
+  FAQ section — Accordion. Theme: light or dark (section setting).
 {%- endcomment -%}
 
-<section class="section-padding">
+{% assign faq_theme = section.settings.theme | default: 'dark' %}
+
+<section class="section-padding {% if faq_theme == 'light' %}bg-white{% endif %}" data-faq-theme="{{ faq_theme }}">
   <div class="gingr-container max-w-3xl">
-    <h2 class="text-2xl font-bold text-center mb-8">{{ section.settings.heading }}</h2>
+    <h2 class="text-2xl font-bold text-center mb-8 {% if faq_theme == 'light' %}text-gray-900{% else %}text-heading{% endif %}">{{ section.settings.heading }}</h2>
 
     <div class="space-y-3">
       {% for block in section.blocks %}
-        <details class="group border border-white/10 rounded-xl overflow-hidden bg-white/5" {{ block.shopify_attributes }}>
-          <summary class="flex items-center justify-between px-5 py-4 cursor-pointer text-sm font-medium hover:bg-white/5 transition-colors">
+        <details class="group rounded-xl overflow-hidden {% if faq_theme == 'light' %}border border-gray-200 bg-gray-50{% else %}border border-white/10 bg-white/5{% endif %}" {{ block.shopify_attributes }}>
+          <summary class="flex items-center justify-between px-5 py-4 cursor-pointer text-sm font-medium transition-colors {% if faq_theme == 'light' %}text-gray-900 hover:bg-gray-100{% else %}text-body hover:bg-white/5{% endif %}">
             {{ block.settings.question }}
-            <svg class="w-4 h-4 text-white/30 transition-transform group-open:rotate-180 flex-shrink-0 ml-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19.5 8.25-7.5 7.5-7.5-7.5"/></svg>
+            <svg class="w-4 h-4 flex-shrink-0 ml-4 transition-transform group-open:rotate-180 {% if faq_theme == 'light' %}text-gray-400{% else %}text-white/30{% endif %}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19.5 8.25-7.5 7.5-7.5-7.5"/></svg>
           </summary>
-          <div class="px-5 pb-4 text-sm text-subheading leading-relaxed">
+          <div class="px-5 pb-4 text-sm leading-relaxed {% if faq_theme == 'light' %}text-gray-600{% else %}text-subheading{% endif %}">
             {{ block.settings.answer }}
           </div>
         </details>
@@ -33,6 +34,16 @@
       "id": "heading",
       "label": "Heading",
       "default": "Frequently asked questions"
+    },
+    {
+      "type": "select",
+      "id": "theme",
+      "label": "Theme",
+      "options": [
+        { "value": "dark", "label": "Dark" },
+        { "value": "light", "label": "Light" }
+      ],
+      "default": "dark"
     }
   ],
   "blocks": [

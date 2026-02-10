@@ -1,0 +1,58 @@
+{%- comment -%}
+  Complementary products 
+  When rendered via Section Rendering API with product_id, recommendations are available.
+  Otherwise > manual product list from settings.
+{%- endcomment -%}
+
+{% assign complementary_products = null %}
+{% if recommendations.performed and recommendations.products.size > 0 %}
+  {% assign complementary_products = recommendations.products %}
+{% elsif section.settings.product_list != blank and section.settings.product_list.size > 0 %}
+  {% assign complementary_products = section.settings.product_list %}
+{% endif %}
+
+{% if complementary_products.size > 0 %}
+  <section class="section-padding bg-white/5" data-section-id="{{ section.id }}">
+    <div class="gingr-container">
+      {% if section.settings.heading != blank %}
+        <h2 class="text-2xl font-bold text-heading mb-6">{{ section.settings.heading }}</h2>
+      {% endif %}
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+        {% for product in complementary_products limit: section.settings.products_to_show %}
+          {% render 'product-card', product: product %}
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+{% endif %}
+
+{% schema %}
+{
+  "name": "Complementary products",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Complete your routine"
+    },
+    {
+      "type": "product_list",
+      "id": "product_list",
+      "label": "Products (if recommendations unavailable)",
+      "limit": 6
+    },
+    {
+      "type": "range",
+      "id": "products_to_show",
+      "min": 2,
+      "max": 6,
+      "step": 1,
+      "label": "Products to show",
+      "default": 4
+    }
+  ],
+  "disabled_on": { "groups": ["header", "footer"] }
+}
+{% endschema %}

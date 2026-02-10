@@ -9,10 +9,16 @@
     "header": {
       "type": "header",
       "settings": {}
+    },
+    "best-seller-promo": {
+      "type": "best-seller-promo",
+      "settings": {
+        "enabled": true,
+        "floating": true,
+        "show_badge": true,
+        "dismissible": true
+      }
     }
   },
-  "order": [
-    "announcement-bar",
-    "header"
-  ]
+  "order": ["announcement-bar", "header", "best-seller-promo"]
 }

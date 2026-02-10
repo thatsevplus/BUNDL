@@ -67,6 +67,22 @@
             >
           </a>
         {% endif %}
+
+        {%- comment -%} Recipient form (email, name, message, send_on) for forwarding/sending gift card {%- endcomment -%}
+        <div class="gift-card-recipient-form" style="max-width: 400px; margin: 2rem auto; text-align: left;">
+          <h3>Send this gift card</h3>
+          <form action="#" method="post" id="gift-card-recipient-form">
+            <label for="gift_card_recipient_email">Recipient email</label>
+            <input type="email" id="gift_card_recipient_email" name="form[email]" required>
+            <label for="gift_card_recipient_name">Your name</label>
+            <input type="text" id="gift_card_recipient_name" name="form[name]">
+            <label for="gift_card_recipient_message">Message</label>
+            <textarea id="gift_card_recipient_message" name="form[message]" rows="3"></textarea>
+            <label for="gift_card_send_on">Send on (optional)</label>
+            <input type="date" id="gift_card_send_on" name="form[send_on]">
+            <button type="submit">Send gift card</button>
+          </form>
+        </div>
       </div>
     </main>
   </body>

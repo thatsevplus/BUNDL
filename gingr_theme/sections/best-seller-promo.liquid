@@ -1,0 +1,142 @@
+{%- comment -%}
+  Best seller promo — Floating conversion card (product + badge + CTA).
+  Optional: dismissible (session), floating position, bundle tiers.
+{%- endcomment -%}
+
+{% assign promo_product = section.settings.product %}
+{% assign dismissed_key = 'promo_dismissed_' | append: section.id | replace: '-', '_' %}
+
+{% if section.settings.enabled and promo_product %}
+<div
+  class="best-seller-promo z-40 {% if section.settings.floating %}fixed left-4 right-4 md:left-auto md:right-6 md:max-w-sm{% else %}gingr-container py-4{% endif %}"
+  style="{% if section.settings.floating %}top: {{ section.settings.offset_top | default: 80 }}px;{% endif %}"
+  data-best-seller-promo
+  data-dismissed-key="{{ dismissed_key }}"
+  data-section-id="{{ section.id }}"
+>
+  <div class="relative rounded-2xl border border-white/10 bg-black/90 backdrop-blur-xl shadow-xl overflow-hidden">
+    {% if section.settings.dismissible %}
+      <button type="button" class="absolute top-3 right-3 z-10 w-8 h-8 flex items-center justify-center rounded-full text-white/50 hover:text-white hover:bg-white/10 transition-colors" data-promo-dismiss aria-label="Close">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18 18 6M6 6l12 12"/></svg>
+      </button>
+    {% endif %}
+    <a href="{{ promo_product.url }}" class="block no-underline p-5 md:p-6 group">
+      <div class="flex flex-col sm:flex-row gap-4 items-center sm:items-start text-left">
+        <div class="flex-shrink-0 w-24 h-24 md:w-28 md:h-28 rounded-xl overflow-hidden bg-white/5 ring-2 ring-white/10 group-hover:ring-white/20 transition-all group-hover:scale-105">
+          {% if promo_product.featured_image %}
+            {{ promo_product.featured_image | image_url: width: 224 | image_tag: class: 'w-full h-full object-cover', loading: 'lazy' }}
+          {% else %}
+            <div class="w-full h-full flex items-center justify-center text-white/20">
+              <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M20 7l-8 8-8-8"/></svg>
+            </div>
+          {% endif %}
+        </div>
+        <div class="flex-1 min-w-0">
+          {% if section.settings.show_badge and section.settings.badge_text != blank %}
+            <span class="inline-block text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-gingr-yellow text-gingr-navy mb-2">
+              {{ section.settings.badge_text }}
+            </span>
+          {% endif %}
+          <h3 class="text-lg font-bold text-white truncate">{{ promo_product.title }}</h3>
+          {% if section.settings.tagline != blank %}
+            <p class="text-sm text-white/60 mt-0.5 line-clamp-2">{{ section.settings.tagline }}</p>
+          {% endif %}
+          <div class="mt-2 flex items-center gap-2 flex-wrap">
+            {% assign first_variant = promo_product.selected_or_first_available_variant %}
+            <span class="text-base font-bold text-white">{{ first_variant.price | money }}</span>
+            {% if promo_product.variants.size > 1 and section.settings.show_bundle_tiers %}
+              <span class="text-xs text-white/50">from {{ promo_product.price_min | money }}</span>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+      <span class="mt-4 inline-flex items-center justify-center w-full py-3 rounded-xl bg-gingr-yellow text-gingr-navy text-sm font-bold group-hover:brightness-110 transition-all">
+        {{ section.settings.button_text | default: 'Shop now' }}
+      </span>
+    </a>
+  </div>
+</div>
+{% endif %}
+
+{% schema %}
+{
+  "name": "Best seller promo",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "enabled",
+      "label": "Show promo",
+      "default": true
+    },
+    {
+      "type": "product",
+      "id": "product",
+      "label": "Best seller product"
+    },
+    {
+      "type": "text",
+      "id": "badge_text",
+      "label": "Badge text",
+      "default": "Best Seller"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_badge",
+      "label": "Show badge",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "tagline",
+      "label": "Tagline",
+      "default": "Wake up fast. Stay sharp."
+    },
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "Button text",
+      "default": "Shop now"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_bundle_tiers",
+      "label": "Show bundle pricing hint",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "floating",
+      "label": "Floating (sticky position)",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "offset_top",
+      "min": 60,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "label": "Distance from top",
+      "default": 80
+    },
+    {
+      "type": "checkbox",
+      "id": "dismissible",
+      "label": "Dismissible",
+      "default": true
+    }
+  ],
+  "presets": [
+    {
+      "name": "Best seller promo",
+      "settings": {
+        "enabled": true,
+        "floating": true,
+        "show_badge": true,
+        "dismissible": true
+      }
+    }
+  ]
+}
+{% endschema %}

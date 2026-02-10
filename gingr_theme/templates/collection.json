@@ -1,7 +1,7 @@
 {
   "sections": {
     "main": {
-      "type": "main-collection-health",
+      "type": "main-collection",
       "settings": {}
     }
   },

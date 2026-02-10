@@ -1,0 +1,86 @@
+{%- comment -%}
+  Impact metrics — Sustainability / stats (number + unit + label per block)
+  White-label: metric blocks for any brand (plastic saved, farms supported, etc.)
+{%- endcomment -%}
+
+<section class="section-padding bg-white/5" data-section-id="{{ section.id }}">
+  <div class="gingr-container">
+    {% if section.settings.heading != blank %}
+      <h2 class="text-2xl md:text-3xl font-bold text-heading mb-10 text-center">{{ section.settings.heading }}</h2>
+    {% endif %}
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-6">
+      {% for block in section.blocks %}
+        {% case block.type %}
+          {% when 'metric' %}
+            <div class="text-center p-6 rounded-xl border border-white/10" {{ block.shopify_attributes }}>
+              <div class="text-3xl md:text-4xl font-bold text-accent mb-1">{{ block.settings.number }}{% if block.settings.unit != blank %}{{ block.settings.unit }}{% endif %}</div>
+              <p class="text-sm text-body">{{ block.settings.label }}</p>
+            </div>
+        {% endcase %}
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Impact metrics",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Our impact"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "metric",
+      "name": "Metric",
+      "settings": [
+        {
+          "type": "text",
+          "id": "number",
+          "label": "Number",
+          "default": "10,000"
+        },
+        {
+          "type": "text",
+          "id": "unit",
+          "label": "Unit",
+          "default": "lbs",
+          "info": "e.g. lbs, kg, or leave blank"
+        },
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Metric label",
+          "default": "Plastic saved"
+        },
+        {
+          "type": "select",
+          "id": "icon",
+          "label": "Icon (optional)",
+          "options": [
+            { "value": "leaf", "label": "Leaf" },
+            { "value": "shield", "label": "Shield" },
+            { "value": "star", "label": "Star" }
+          ],
+          "default": "leaf"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Impact metrics",
+      "blocks": [
+        { "type": "metric", "settings": { "number": "10,000", "unit": " lbs", "label": "Plastic saved" } },
+        { "type": "metric", "settings": { "number": "500", "unit": "", "label": "Local farms supported" } }
+      ]
+    }
+  ],
+  "disabled_on": { "groups": ["header", "footer"] }
+}
+{% endschema %}

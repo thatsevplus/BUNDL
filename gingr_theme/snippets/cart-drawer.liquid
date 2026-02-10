@@ -54,7 +54,7 @@
         {% endif %}
       {% endif %}
 
-      {%- comment -%} ===== BUNDLE DISCOUNT BANNER ===== {%- endcomment -%}
+      {%- comment -%} ===== BUNDLE PROGRESS BAR + DISCOUNT BANNER ===== {%- endcomment -%}
       {% if settings.bundle_discount_enabled %}
         {%- assign total_qty = cart.item_count -%}
         {%- assign current_discount = 0 -%}
@@ -75,6 +75,13 @@
           {%- assign next_tier_qty = settings.bundle_tier_1_qty -%}
           {%- assign next_tier_discount = settings.bundle_tier_1_discount -%}
         {% endif %}
+
+        {% render 'bundle-progress',
+          current_quantity: total_qty,
+          next_tier_qty: next_tier_qty,
+          next_tier_percent: next_tier_discount,
+          current_savings: current_discount
+        %}
 
         {% if current_discount > 0 %}
           {%- assign savings_cents = cart.total_price | times: current_discount | divided_by: 100 -%}

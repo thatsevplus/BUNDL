@@ -8,11 +8,32 @@
     },
     "footer": {
       "type": "footer",
-      "settings": {}
+      "settings": {},
+      "blocks": {
+        "menu-shop": {
+          "type": "menu",
+          "settings": {
+            "heading": "Shop",
+            "menu": "main-menu"
+          }
+        },
+        "menu-info": {
+          "type": "menu",
+          "settings": {
+            "heading": "Info"
+          }
+        },
+        "newsletter": {
+          "type": "newsletter",
+          "settings": {
+            "heading": "Stay fresh",
+            "placeholder": "Your email",
+            "button_text": "Subscribe"
+          }
+        }
+      },
+      "block_order": ["menu-shop", "menu-info", "newsletter"]
     }
   },
-  "order": [
-    "pages-grid",
-    "footer"
-  ]
+  "order": ["pages-grid", "footer"]
 }

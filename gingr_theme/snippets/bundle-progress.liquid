@@ -1,0 +1,30 @@
+{% doc %}
+  Renders a bundle tier progress bar (or "You're saving X%!" when at a tier).
+  @param {number} [current_quantity] - Current cart/item quantity
+  @param {number} [next_tier_qty] - Quantity needed for next discount tier
+  @param {number} [next_tier_percent] - Discount % at next tier
+  @param {number} [current_savings] - Current tier discount % (shows "You're saving X%!" when > 0)
+  @example
+  {% render 'bundle-progress', current_quantity: cart.item_count, next_tier_qty: 6, next_tier_percent: 10, current_savings: 0 %}
+{% enddoc %}
+
+{% assign current_quantity = current_quantity | default: 0 %}
+{% assign next_tier_qty = next_tier_qty | default: 0 %}
+{% assign next_tier_percent = next_tier_percent | default: 10 %}
+{% assign current_savings = current_savings | default: 0 %}
+
+{% if next_tier_qty > 0 and current_quantity < next_tier_qty %}
+  {% assign items_needed = next_tier_qty | minus: current_quantity %}
+  {% assign progress_percent = current_quantity | times: 100 | divided_by: next_tier_qty %}
+  <div class="bundle-progress mb-4" data-bundle-progress>
+    <p class="text-xs text-white/50 mb-1">Add {{ items_needed }} more for {{ next_tier_percent }}% off</p>
+    <div class="w-full h-1.5 bg-white/10 rounded-full overflow-hidden">
+      <div class="h-full bg-gingr-yellow rounded-full transition-all duration-500" style="width: {{ progress_percent }}%;"></div>
+    </div>
+  </div>
+{% elsif current_savings > 0 %}
+  <div class="mb-4 text-xs font-medium text-green-400 flex items-center gap-1">
+    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m4.5 12.75 6 6 9-13.5"/></svg>
+    You're saving {{ current_savings }}%!
+  </div>
+{% endif %}

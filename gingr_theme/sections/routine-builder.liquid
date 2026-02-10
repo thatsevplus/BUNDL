@@ -1,0 +1,102 @@
+{%- comment -%}
+  Routine builder — Time slots + products (cross-sell).
+  White-label: time_slot blocks + product_list; optional timeline view.
+{%- endcomment -%}
+
+<section class="section-padding bg-white/5" data-section-id="{{ section.id }}">
+  <div class="gingr-container">
+    {% if section.settings.heading != blank %}
+      <h2 class="text-2xl md:text-3xl font-bold text-heading mb-8 text-center">{{ section.settings.heading }}</h2>
+    {% endif %}
+    {% if section.settings.show_timeline and section.blocks.size > 0 %}
+      <div class="flex flex-wrap justify-center gap-4 mb-10">
+        {% for block in section.blocks %}
+          {% case block.type %}
+            {% when 'time_slot' %}
+              <div class="px-4 py-2 rounded-full bg-white/10 text-body text-sm font-medium" {{ block.shopify_attributes }}>
+                {{ block.settings.label }}{% if block.settings.time != blank %} — {{ block.settings.time }}{% endif %}
+              </div>
+          {% endcase %}
+        {% endfor %}
+      </div>
+    {% endif %}
+    {% if section.settings.available_products != blank and section.settings.available_products.size > 0 %}
+      <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+        {% for product in section.settings.available_products %}
+          <div class="product-card p-4 rounded-xl">
+            <a href="{{ product.url }}" class="block no-underline group">
+              {% if product.featured_image %}
+                <div class="aspect-square rounded-lg overflow-hidden mb-3">
+                  {{ product.featured_image | image_url: width: 300 | image_tag: class: 'w-full h-full object-cover group-hover:scale-105 transition-transform', loading: 'lazy' }}
+                </div>
+              {% endif %}
+              <h3 class="text-sm font-semibold text-heading line-clamp-2">{{ product.title }}</h3>
+              <p class="text-xs text-subheading mt-1">{{ product.price | money }}</p>
+            </a>
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <p class="text-center text-subheading text-sm">Add products in the theme editor (Available products).</p>
+    {% endif %}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Routine builder",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Build your daily routine"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_timeline",
+      "label": "Show timeline (time slots)",
+      "default": true
+    },
+    {
+      "type": "product_list",
+      "id": "available_products",
+      "label": "Available products",
+      "limit": 10
+    }
+  ],
+  "blocks": [
+    {
+      "type": "time_slot",
+      "name": "Time slot",
+      "settings": [
+        { "type": "text", "id": "label", "label": "Time label", "default": "Morning" },
+        { "type": "text", "id": "time", "label": "Time", "default": "8:00 AM" },
+        {
+          "type": "select",
+          "id": "icon",
+          "label": "Icon",
+          "options": [
+            { "value": "sunrise", "label": "Sunrise" },
+            { "value": "sun", "label": "Sun" },
+            { "value": "moon", "label": "Moon" }
+          ],
+          "default": "sunrise"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Routine builder",
+      "blocks": [
+        { "type": "time_slot", "settings": { "label": "Morning", "time": "8:00 AM" } },
+        { "type": "time_slot", "settings": { "label": "Midday", "time": "12:00 PM" } },
+        { "type": "time_slot", "settings": { "label": "Evening", "time": "6:00 PM" } }
+      ]
+    }
+  ],
+  "disabled_on": { "groups": ["header", "footer"] }
+}
+{% endschema %}

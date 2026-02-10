@@ -1,10 +1,10 @@
 <header
-  class="fixed top-0 left-0 right-0 z-50 transition-all duration-500"
+  class="z-50 transition-all duration-500 {% if section.settings.sticky_header %}fixed top-0 left-0 right-0{% else %}relative{% endif %}"
   data-section-id="{{ section.id }}"
   data-header
 >
-  {%- comment -%} Header inner — starts opaque, goes translucent on scroll {%- endcomment -%}
-  <div class="header-bg absolute inset-0 bg-black/0 backdrop-blur-0 transition-all duration-500 pointer-events-none" data-header-bg></div>
+  {%- comment -%} Header inner — transparent over hero when transparent_header, else opaque {%- endcomment -%}
+  <div class="header-bg absolute inset-0 {% if section.settings.transparent_header %}bg-black/0 backdrop-blur-0{% else %}bg-black/70 backdrop-blur-xl{% endif %} transition-all duration-500 pointer-events-none" data-header-bg></div>
 
   <div class="relative gingr-container flex items-center justify-between py-5 md:py-6">
 
@@ -40,6 +40,10 @@
         </a>
       {% endfor %}
 
+      {%- comment -%} Predictive search (desktop) {%- endcomment -%}
+      <div class="hidden lg:block ml-4">
+        {% render 'predictive-search' %}
+      </div>
       {%- comment -%} Icons {%- endcomment -%}
       <div class="flex items-center gap-5 ml-4">
         {% if shop.customer_accounts_enabled %}
@@ -94,13 +98,27 @@
   </nav>
 </header>
 
-{%- comment -%} Spacer to prevent content from hiding behind fixed header {%- endcomment -%}
+{%- if section.settings.sticky_header -%}
 <div class="h-[72px] md:h-[88px]" data-header-spacer></div>
+{%- endif -%}
 
 {% schema %}
 {
   "name": "Header",
   "settings": [
+    {
+      "type": "checkbox",
+      "id": "sticky_header",
+      "label": "Sticky header",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "transparent_header",
+      "label": "Transparent over hero",
+      "info": "Header starts transparent and becomes opaque on scroll.",
+      "default": true
+    },
     {
       "type": "image_picker",
       "id": "logo",
