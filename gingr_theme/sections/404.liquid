@@ -1,0 +1,19 @@
+<section class="section-padding">
+  <div class="gingr-container max-w-xl text-center">
+    <p class="text-6xl font-bold text-gingr-navy/20 mb-4">404</p>
+    <h1 class="text-xl font-bold text-gingr-navy mb-2">{{ '404.title' | t }}</h1>
+    <p class="text-sm text-gray-500 mb-6">{{ '404.not_found' | t }}</p>
+    <a href="{{ routes.root_url }}" class="btn-primary no-underline">{{ '404.back_to_shopping' | t }}</a>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "404",
+  "tag": "section",
+  "settings": [],
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  }
+}
+{% endschema %}

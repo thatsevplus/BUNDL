@@ -1,0 +1,244 @@
+{%- comment -%}
+  GINGR — Bundle highlight
+  Product cards with dropdown showing pack sizes from global bundle discount tiers.
+  Each card uses a product picker for URL, image, price.
+{%- endcomment -%}
+
+{%- comment -%} Build tier data from global settings {%- endcomment -%}
+{%- assign t1_qty = settings.bundle_tier_1_qty | default: 6 -%}
+{%- assign t1_off = settings.bundle_tier_1_discount | default: 10 -%}
+{%- assign t2_qty = settings.bundle_tier_2_qty | default: 12 -%}
+{%- assign t2_off = settings.bundle_tier_2_discount | default: 20 -%}
+{%- assign t3_qty = settings.bundle_tier_3_qty | default: 24 -%}
+{%- assign t3_off = settings.bundle_tier_3_discount | default: 30 -%}
+
+<section class="section-padding" data-section-id="{{ section.id }}">
+  <div class="gingr-container">
+    {%- comment -%} Section heading {%- endcomment -%}
+    <div class="text-center mb-12">
+      {% if section.settings.eyebrow != blank %}
+        <p class="text-xs font-bold uppercase tracking-[0.2em] text-subheading mb-3">{{ section.settings.eyebrow }}</p>
+      {% endif %}
+      <h2 class="text-3xl md:text-4xl font-bold">{{ section.settings.heading }}</h2>
+      {% if section.settings.subheading != blank %}
+        <p class="text-base text-subheading mt-3 max-w-md mx-auto">{{ section.settings.subheading }}</p>
+      {% endif %}
+    </div>
+
+    {%- comment -%} Product cards — horizontal layout: image left, content right {%- endcomment -%}
+    {% assign product_blocks = section.blocks | where: "type", "product" %}
+    {% if product_blocks.size > 0 %}
+      <div class="flex flex-col gap-6 max-w-4xl mx-auto">
+        {% for block in product_blocks %}
+          {%- assign prod = block.settings.product -%}
+          {%- assign prod_title = block.settings.title -%}
+          {%- if prod_title == blank and prod != blank -%}
+            {%- assign prod_title = prod.title -%}
+          {%- endif -%}
+          {%- assign prod_price = block.settings.starting_price -%}
+          {%- if prod_price == blank and prod != blank -%}
+            {%- assign prod_price = prod.price | money -%}
+          {%- endif -%}
+          {%- assign prod_url = '#' -%}
+          {%- if prod != blank -%}
+            {%- assign prod_url = prod.url -%}
+          {%- endif -%}
+
+          <div class="relative rounded-2xl border border-white/10 bg-white/5 backdrop-blur-sm group grid grid-cols-1 md:grid-cols-[200px_1fr] lg:grid-cols-[240px_1fr]" data-bundle-product {{ block.shopify_attributes }}>
+
+            {%- comment -%} Image — left side {%- endcomment -%}
+            <a href="{{ prod_url }}" class="block aspect-square md:aspect-auto md:h-full rounded-t-2xl md:rounded-l-2xl md:rounded-tr-none overflow-hidden"
+               {% if block.settings.bg_color != blank %}style="background-color: {{ block.settings.bg_color }};"{% endif %}>
+              {% if block.settings.image %}
+                {{ block.settings.image | image_url: width: 500 | image_tag:
+                  class: 'w-full h-full object-contain p-6 group-hover:scale-105 transition-transform duration-500',
+                  loading: 'lazy',
+                  widths: '250,400,500'
+                }}
+              {% elsif prod != blank and prod.featured_image %}
+                {{ prod.featured_image | image_url: width: 500 | image_tag:
+                  class: 'w-full h-full object-contain p-6 group-hover:scale-105 transition-transform duration-500',
+                  loading: 'lazy',
+                  widths: '250,400,500'
+                }}
+              {% else %}
+                <div class="w-full h-full min-h-[180px] bg-white/5 flex items-center justify-center">
+                  <svg class="w-16 h-16 text-white/10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909"/></svg>
+                </div>
+              {% endif %}
+            </a>
+
+            {%- comment -%} Content — right side {%- endcomment -%}
+            <div class="p-5 md:p-6 flex flex-col justify-center">
+              <a href="{{ prod_url }}" class="no-underline">
+                <h3 class="text-lg font-bold">{{ prod_title }}</h3>
+              </a>
+              {% if block.settings.subtitle != blank %}
+                <p class="text-sm text-subheading mt-1">{{ block.settings.subtitle }}</p>
+              {% endif %}
+              {% if prod_price != blank %}
+                <p class="text-sm mt-1">From <span class="font-bold" style="color:var(--color-accent);">{{ prod_price }}</span></p>
+              {% endif %}
+
+              {%- comment -%} Bundle dropdown {%- endcomment -%}
+              <div class="mt-4 relative" data-bundle-select>
+                <button
+                  class="w-full flex items-center justify-between px-4 py-3 rounded-xl border border-white/15 bg-white/5 text-sm font-medium hover:bg-white/10 transition-all"
+                  data-bundle-select-toggle
+                  aria-expanded="false"
+                >
+                  <span data-bundle-select-label>{{ section.settings.select_label | default: 'Select pack size' }}</span>
+                  <svg class="w-4 h-4 opacity-40 transition-transform duration-200" data-bundle-select-chevron fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19.5 8.25-7.5 7.5-7.5-7.5"/></svg>
+                </button>
+
+                <div class="absolute left-0 right-0 top-full mt-1 z-30 rounded-xl border border-white/10 bg-[#141418] backdrop-blur-xl hidden" data-bundle-select-dropdown>
+                  {% if t1_off > 0 %}
+                    <button
+                      class="w-full px-4 py-3 flex items-center justify-between text-left hover:bg-white/5 transition-colors border-b border-white/5"
+                      data-bundle-option
+                      data-amount="{{ t1_qty }}"
+                      data-url="{{ prod_url }}"
+                    >
+                      <div>
+                        <span class="text-sm font-bold">Pack {{ t1_qty }}</span>
+                        {% if prod_title != blank %}
+                          <span class="text-xs opacity-50 ml-1">({{ prod_title }})</span>
+                        {% endif %}
+                      </div>
+                      <span class="text-xs font-bold px-2 py-0.5 rounded-full" style="background:color-mix(in srgb, var(--color-accent) 20%, transparent);color:var(--color-accent);">{{ t1_off }}% off</span>
+                    </button>
+                  {% endif %}
+                  {% if t2_off > 0 %}
+                    <button
+                      class="w-full px-4 py-3 flex items-center justify-between text-left hover:bg-white/5 transition-colors border-b border-white/5"
+                      data-bundle-option
+                      data-amount="{{ t2_qty }}"
+                      data-url="{{ prod_url }}"
+                    >
+                      <div>
+                        <span class="text-sm font-bold">Pack {{ t2_qty }}</span>
+                        {% if prod_title != blank %}
+                          <span class="text-xs opacity-50 ml-1">({{ prod_title }})</span>
+                        {% endif %}
+                      </div>
+                      <span class="text-xs font-bold px-2 py-0.5 rounded-full" style="background:color-mix(in srgb, var(--color-accent) 20%, transparent);color:var(--color-accent);">{{ t2_off }}% off</span>
+                    </button>
+                  {% endif %}
+                  {% if t3_off > 0 %}
+                    <button
+                      class="w-full px-4 py-3 flex items-center justify-between text-left hover:bg-white/5 transition-colors"
+                      data-bundle-option
+                      data-amount="{{ t3_qty }}"
+                      data-url="{{ prod_url }}"
+                    >
+                      <div>
+                        <span class="text-sm font-bold">Pack {{ t3_qty }}</span>
+                        {% if prod_title != blank %}
+                          <span class="text-xs opacity-50 ml-1">({{ prod_title }})</span>
+                        {% endif %}
+                      </div>
+                      <span class="text-xs font-bold px-2 py-0.5 rounded-full" style="background:color-mix(in srgb, var(--color-accent) 20%, transparent);color:var(--color-accent);">{{ t3_off }}% off</span>
+                    </button>
+                  {% endif %}
+                </div>
+              </div>
+
+              {%- comment -%} View product link {%- endcomment -%}
+              <a href="{{ prod_url }}" class="btn-secondary mt-3 text-sm w-full no-underline text-center">
+                {{ block.settings.cta | default: 'View product' }}
+              </a>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Bundle highlight",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow text",
+      "default": "Save more"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Build your pack"
+    },
+    {
+      "type": "text",
+      "id": "subheading",
+      "label": "Subheading",
+      "default": "The more you buy, the more you save."
+    },
+    {
+      "type": "text",
+      "id": "select_label",
+      "label": "Dropdown placeholder text",
+      "default": "Select pack size"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "product",
+      "name": "Product",
+      "settings": [
+        {
+          "type": "product",
+          "id": "product",
+          "label": "Product"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Product name (override)"
+        },
+        {
+          "type": "text",
+          "id": "subtitle",
+          "label": "Short description"
+        },
+        {
+          "type": "text",
+          "id": "starting_price",
+          "label": "Starting price",
+          "default": "€4.50"
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Product image (override)"
+        },
+        {
+          "type": "color",
+          "id": "bg_color",
+          "label": "Image background color (optional)"
+        },
+        {
+          "type": "text",
+          "id": "cta",
+          "label": "Button text",
+          "default": "View product"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Bundle highlight",
+      "blocks": [
+        { "type": "product", "settings": { "title": "GINGR ENERGY", "subtitle": "Clean energy to kickstart your day.", "starting_price": "€4.50" }},
+        { "type": "product", "settings": { "title": "GINGR IMMUNITY", "subtitle": "Daily defense for your immune system.", "starting_price": "€4.50" }},
+        { "type": "product", "settings": { "title": "GINGR FOCUS", "subtitle": "Clarity & concentration.", "starting_price": "€4.50" }}
+      ]
+    }
+  ]
+}
+{% endschema %}

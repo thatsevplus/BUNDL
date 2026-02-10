@@ -1,0 +1,292 @@
+{%- comment -%}
+  GINGR — Info Tabs
+  Animated tab cards to showcase key info.
+  Inspired by 21st.dev animated-tabs pattern.
+{%- endcomment -%}
+
+{%- assign tab_inactive_bg = section.settings.tab_inactive_bg | default: '#262626' -%}
+{%- assign tab_inactive_text = section.settings.tab_inactive_text | default: '#a3a3a3' -%}
+{%- assign tab_active_bg = section.settings.tab_active_bg | default: '#ffffff' -%}
+{%- assign tab_active_text = section.settings.tab_active_text | default: '#0b0f0e' -%}
+{%- assign card_bg = section.settings.card_bg | default: '#141418' -%}
+{%- assign card_border = section.settings.card_border | default: '#262626' -%}
+
+<section class="section-padding" data-section-id="{{ section.id }}">
+  <div class="gingr-container">
+    {%- comment -%} Section heading {%- endcomment -%}
+    {% if section.settings.heading != blank %}
+      <div class="text-center mb-12">
+        {% if section.settings.eyebrow != blank %}
+          <p class="text-xs font-bold uppercase tracking-[0.2em] text-subheading mb-3">{{ section.settings.eyebrow }}</p>
+        {% endif %}
+        <h2 class="text-3xl md:text-4xl font-bold">{{ section.settings.heading }}</h2>
+        {% if section.settings.subheading != blank %}
+          <p class="text-base text-subheading mt-3 max-w-lg mx-auto">{{ section.settings.subheading }}</p>
+        {% endif %}
+      </div>
+    {% endif %}
+
+    {%- comment -%} Tabs container {%- endcomment -%}
+    <div class="max-w-4xl mx-auto" data-info-tabs>
+      {%- comment -%} Tab buttons {%- endcomment -%}
+      <div class="flex flex-wrap justify-center gap-2 mb-8" role="tablist">
+        {% for block in section.blocks %}
+          <button
+            role="tab"
+            aria-selected="{% if forloop.first %}true{% else %}false{% endif %}"
+            aria-controls="tab-panel-{{ block.id }}"
+            data-tab-trigger="{{ forloop.index0 }}"
+            class="relative px-6 py-3 text-sm font-semibold rounded-xl transition-all duration-300"
+            style="{% if forloop.first %}background-color:{{ tab_active_bg }};color:{{ tab_active_text }};{% else %}background-color:{{ tab_inactive_bg }};color:{{ tab_inactive_text }};{% endif %}"
+            data-tab-active-bg="{{ tab_active_bg }}"
+            data-tab-active-text="{{ tab_active_text }}"
+            data-tab-inactive-bg="{{ tab_inactive_bg }}"
+            data-tab-inactive-text="{{ tab_inactive_text }}"
+            {{ block.shopify_attributes }}
+          >
+            {% if block.settings.tab_icon != blank %}
+              <span class="mr-2">{{ block.settings.tab_icon }}</span>
+            {% endif %}
+            {{ block.settings.tab_label }}
+          </button>
+        {% endfor %}
+      </div>
+
+      {%- comment -%} Tab panels {%- endcomment -%}
+      <div class="relative">
+        {% for block in section.blocks %}
+          <div
+            role="tabpanel"
+            id="tab-panel-{{ block.id }}"
+            data-tab-panel="{{ forloop.index0 }}"
+            class="tab-panel rounded-3xl backdrop-blur-sm p-8 md:p-10 transition-all duration-500 {% if forloop.first %}block opacity-100 translate-y-0{% else %}hidden opacity-0 translate-y-4{% endif %}"
+            style="background-color:{{ card_bg }};border:1px solid {{ card_border }};"
+          >
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+              {%- comment -%} Card image {%- endcomment -%}
+              {% if block.settings.image %}
+                <div class="rounded-2xl overflow-hidden">
+                  {{ block.settings.image | image_url: width: 700 | image_tag:
+                    class: 'w-full h-auto',
+                    loading: 'lazy',
+                    widths: '300,500,700'
+                  }}
+                </div>
+              {% endif %}
+
+              {%- comment -%} Card content {%- endcomment -%}
+              <div class="{% unless block.settings.image %}md:col-span-2 text-center{% endunless %}">
+                <h3 class="text-xl md:text-2xl font-bold mb-4">{{ block.settings.heading }}</h3>
+                {% if block.settings.description != blank %}
+                  <p class="leading-relaxed">{{ block.settings.description }}</p>
+                {% endif %}
+
+                {%- comment -%} Key points {%- endcomment -%}
+                {% if block.settings.point_1 != blank %}
+                  <ul class="mt-6 space-y-3">
+                    {% if block.settings.point_1 != blank %}
+                      <li class="flex items-center gap-3">
+                        <span class="w-1.5 h-1.5 rounded-full bg-gingr-yellow flex-shrink-0"></span>
+                        <span class="text-sm">{{ block.settings.point_1 }}</span>
+                      </li>
+                    {% endif %}
+                    {% if block.settings.point_2 != blank %}
+                      <li class="flex items-center gap-3">
+                        <span class="w-1.5 h-1.5 rounded-full bg-gingr-yellow flex-shrink-0"></span>
+                        <span class="text-sm">{{ block.settings.point_2 }}</span>
+                      </li>
+                    {% endif %}
+                    {% if block.settings.point_3 != blank %}
+                      <li class="flex items-center gap-3">
+                        <span class="w-1.5 h-1.5 rounded-full bg-gingr-yellow flex-shrink-0"></span>
+                        <span class="text-sm">{{ block.settings.point_3 }}</span>
+                      </li>
+                    {% endif %}
+                  </ul>
+                {% endif %}
+
+                {% if block.settings.cta_text != blank %}
+                  <a href="{{ block.settings.cta_link }}" class="btn-secondary mt-6 no-underline inline-flex items-center gap-2 text-sm">
+                    {{ block.settings.cta_text }}
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"/></svg>
+                  </a>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Info tabs",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow text"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Why GINGR?"
+    },
+    {
+      "type": "text",
+      "id": "subheading",
+      "label": "Subheading",
+      "default": "Everything you need to know."
+    },
+    {
+      "type": "header",
+      "content": "Tab buttons"
+    },
+    {
+      "type": "color",
+      "id": "tab_inactive_bg",
+      "default": "#262626",
+      "label": "Tab (inactive) background"
+    },
+    {
+      "type": "color",
+      "id": "tab_inactive_text",
+      "default": "#a3a3a3",
+      "label": "Tab (inactive) text"
+    },
+    {
+      "type": "color",
+      "id": "tab_active_bg",
+      "default": "#ffffff",
+      "label": "Tab (active) background"
+    },
+    {
+      "type": "color",
+      "id": "tab_active_text",
+      "default": "#0b0f0e",
+      "label": "Tab (active) text"
+    },
+    {
+      "type": "header",
+      "content": "Card"
+    },
+    {
+      "type": "color",
+      "id": "card_bg",
+      "default": "#141418",
+      "label": "Card background"
+    },
+    {
+      "type": "color",
+      "id": "card_border",
+      "default": "#262626",
+      "label": "Card border"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "tab",
+      "name": "Tab",
+      "settings": [
+        {
+          "type": "text",
+          "id": "tab_label",
+          "label": "Tab label",
+          "default": "Ingredients"
+        },
+        {
+          "type": "text",
+          "id": "tab_icon",
+          "label": "Tab icon (emoji, optional)"
+        },
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Card heading",
+          "default": "Clean & organic"
+        },
+        {
+          "type": "textarea",
+          "id": "description",
+          "label": "Card description",
+          "default": "We source the finest organic ginger and combine it with functional superfoods."
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Card image"
+        },
+        {
+          "type": "text",
+          "id": "point_1",
+          "label": "Point 1"
+        },
+        {
+          "type": "text",
+          "id": "point_2",
+          "label": "Point 2"
+        },
+        {
+          "type": "text",
+          "id": "point_3",
+          "label": "Point 3"
+        },
+        {
+          "type": "text",
+          "id": "cta_text",
+          "label": "Button text"
+        },
+        {
+          "type": "url",
+          "id": "cta_link",
+          "label": "Button link"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Info tabs",
+      "blocks": [
+        {
+          "type": "tab",
+          "settings": {
+            "tab_label": "Ingredients",
+            "heading": "100% Clean ingredients",
+            "description": "Organic ginger, functional superfoods. No fillers, no preservatives.",
+            "point_1": "Cold-pressed for maximum potency",
+            "point_2": "Certified organic ginger",
+            "point_3": "Zero artificial ingredients"
+          }
+        },
+        {
+          "type": "tab",
+          "settings": {
+            "tab_label": "How it works",
+            "heading": "One shot. One function.",
+            "description": "Each shot is designed around a single purpose. Pick the one that fits your day.",
+            "point_1": "Take one shot in the morning",
+            "point_2": "Feel the difference in days",
+            "point_3": "Build a daily routine"
+          }
+        },
+        {
+          "type": "tab",
+          "settings": {
+            "tab_label": "Subscribe",
+            "heading": "Save 15% forever",
+            "description": "Subscribe and get your shots delivered on your schedule. Pause or cancel anytime.",
+            "point_1": "15% off every order",
+            "point_2": "Free shipping included",
+            "point_3": "Flexible — skip or pause anytime"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

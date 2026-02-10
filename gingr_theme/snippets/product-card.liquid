@@ -1,0 +1,58 @@
+{%- comment -%}
+  Renders a product card for collection grids.
+  Usage: {% render 'product-card', product: product %}
+{%- endcomment -%}
+
+<article class="product-card group">
+  <a href="{{ product.url }}" class="block no-underline">
+    {%- comment -%} Image {%- endcomment -%}
+    <div class="aspect-square bg-white/5 overflow-hidden">
+      {% if product.featured_image %}
+        {{ product.featured_image | image_url: width: 600 | image_tag:
+          class: 'w-full h-full object-cover group-hover:scale-105 transition-transform duration-300',
+          loading: 'lazy',
+          widths: '300,400,600'
+        }}
+      {% else %}
+        <div class="w-full h-full flex items-center justify-center text-white/10">
+          <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909M3.75 21h16.5A2.25 2.25 0 0 0 22.5 18.75V5.25A2.25 2.25 0 0 0 20.25 3H3.75A2.25 2.25 0 0 0 1.5 5.25v13.5A2.25 2.25 0 0 0 3.75 21Z"/></svg>
+        </div>
+      {% endif %}
+    </div>
+
+    {%- comment -%} Content {%- endcomment -%}
+    <div class="p-4">
+      {%- comment -%} Badges {%- endcomment -%}
+      {% if product.metafields.health.dietary_badges.value %}
+        <div class="flex flex-wrap gap-1 mb-2">
+          {% for badge_text in product.metafields.health.dietary_badges.value %}
+            {% render 'badge', text: badge_text %}
+          {% endfor %}
+        </div>
+      {% endif %}
+
+      <h3 class="text-sm font-semibold text-white mb-1">{{ product.title }}</h3>
+
+      {%- comment -%} Price {%- endcomment -%}
+      {% if product.price_varies %}
+        <p class="text-sm font-bold text-gingr-yellow">
+          From {{ product.price_min | money }}
+        </p>
+      {% else %}
+        <p class="text-sm font-bold text-gingr-yellow">{{ product.price | money }}</p>
+      {% endif %}
+
+      {%- comment -%} Pack savings hint {%- endcomment -%}
+      {% if product.variants.size > 1 %}
+        {% assign best_variant = product.variants | last %}
+        {% assign single_variant = product.variants | first %}
+        {% if best_variant.price < single_variant.price %}
+          {% assign pack_savings = single_variant.price | minus: best_variant.price | times: 100 | divided_by: single_variant.price %}
+          {% if pack_savings > 0 %}
+            <p class="text-xs text-white/40 mt-1">Save up to {{ pack_savings }}% with packs</p>
+          {% endif %}
+        {% endif %}
+      {% endif %}
+    </div>
+  </a>
+</article>

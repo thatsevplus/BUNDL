@@ -1,0 +1,209 @@
+{%- comment -%}
+  Cart drawer — rendered once in theme.liquid.
+  Content is refreshed via AJAX (section rendering API).
+  Includes: bundle discount auto-calc, upsell product, free shipping bar.
+{%- endcomment -%}
+
+{%- comment -%} Overlay {%- endcomment -%}
+<div id="cart-drawer-overlay" class="hidden fixed inset-0 bg-black/60 z-50 transition-opacity backdrop-blur-sm"></div>
+
+{%- comment -%} Drawer {%- endcomment -%}
+<aside id="cart-drawer"
+  class="fixed top-0 right-0 bottom-0 w-full max-w-md z-50 shadow-2xl transform translate-x-full transition-transform duration-300 flex flex-col"
+  style="background: rgba(15, 15, 20, 0.95); backdrop-filter: blur(20px);"
+  aria-label="Shopping cart"
+  role="dialog"
+>
+  {%- comment -%} Header {%- endcomment -%}
+  <div class="flex items-center justify-between px-6 py-4 border-b border-white/10">
+    <h2 class="text-lg font-bold text-white">Your cart</h2>
+    <button data-cart-close class="text-white/40 hover:text-white" aria-label="Close cart">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6 18 18 6M6 6l12 12"/></svg>
+    </button>
+  </div>
+
+  {%- comment -%} Content (refreshable) {%- endcomment -%}
+  <div id="cart-drawer-content" class="flex-1 overflow-y-auto px-6 py-4">
+    {% if cart.item_count == 0 %}
+      <div class="flex flex-col items-center justify-center h-full text-center">
+        <svg class="w-16 h-16 text-white/10 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.356-1.993 1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 0 1-1.12-1.243l1.264-12A1.125 1.125 0 0 1 5.513 7.5h12.974c.576 0 1.059.435 1.119 1.007ZM8.625 10.5a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm7.5 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z"/></svg>
+        <p class="text-sm text-white/40">Your cart is empty</p>
+        <a href="{{ routes.all_products_collection_url }}" class="btn-primary mt-4 text-sm">Start shopping</a>
+      </div>
+    {% else %}
+
+      {%- comment -%} ===== FREE SHIPPING PROGRESS ===== {%- endcomment -%}
+      {% if settings.free_shipping_threshold > 0 %}
+        {% assign threshold_cents = settings.free_shipping_threshold | times: 100 %}
+        {% assign remaining = threshold_cents | minus: cart.total_price %}
+        {% if remaining > 0 %}
+          {% assign progress = cart.total_price | times: 100 | divided_by: threshold_cents %}
+          <div class="mb-4">
+            <p class="text-xs text-white/40 mb-1">
+              {{ remaining | money }} away from free shipping
+            </p>
+            <div class="w-full h-1.5 bg-white/10 rounded-full overflow-hidden">
+              <div class="h-full bg-gingr-yellow rounded-full transition-all duration-500" style="width: {{ progress }}%"></div>
+            </div>
+          </div>
+        {% else %}
+          <div class="mb-4 text-xs font-medium text-green-400 flex items-center gap-1">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m4.5 12.75 6 6 9-13.5"/></svg>
+            Free shipping unlocked!
+          </div>
+        {% endif %}
+      {% endif %}
+
+      {%- comment -%} ===== BUNDLE DISCOUNT BANNER ===== {%- endcomment -%}
+      {% if settings.bundle_discount_enabled %}
+        {%- assign total_qty = cart.item_count -%}
+        {%- assign current_discount = 0 -%}
+        {%- assign next_tier_qty = 0 -%}
+        {%- assign next_tier_discount = 0 -%}
+
+        {% if total_qty >= settings.bundle_tier_3_qty %}
+          {%- assign current_discount = settings.bundle_tier_3_discount -%}
+        {% elsif total_qty >= settings.bundle_tier_2_qty %}
+          {%- assign current_discount = settings.bundle_tier_2_discount -%}
+          {%- assign next_tier_qty = settings.bundle_tier_3_qty -%}
+          {%- assign next_tier_discount = settings.bundle_tier_3_discount -%}
+        {% elsif total_qty >= settings.bundle_tier_1_qty %}
+          {%- assign current_discount = settings.bundle_tier_1_discount -%}
+          {%- assign next_tier_qty = settings.bundle_tier_2_qty -%}
+          {%- assign next_tier_discount = settings.bundle_tier_2_discount -%}
+        {% else %}
+          {%- assign next_tier_qty = settings.bundle_tier_1_qty -%}
+          {%- assign next_tier_discount = settings.bundle_tier_1_discount -%}
+        {% endif %}
+
+        {% if current_discount > 0 %}
+          {%- assign savings_cents = cart.total_price | times: current_discount | divided_by: 100 -%}
+          <div class="mb-4 p-3 rounded-xl border border-green-500/20 bg-green-500/5">
+            <div class="flex items-center gap-2 mb-1">
+              <svg class="w-4 h-4 text-green-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m4.5 12.75 6 6 9-13.5"/></svg>
+              <p class="text-sm font-semibold text-green-400">Bundle discount: {{ current_discount }}% off</p>
+            </div>
+            <p class="text-xs text-white/40 ml-6">You save {{ savings_cents | money }} on this order</p>
+            {% if next_tier_qty > 0 %}
+              {%- assign items_needed = next_tier_qty | minus: total_qty -%}
+              <p class="text-xs text-white/30 ml-6 mt-1">Add {{ items_needed }} more for {{ next_tier_discount }}% off</p>
+            {% endif %}
+          </div>
+        {% elsif next_tier_qty > 0 %}
+          {%- assign items_needed = next_tier_qty | minus: total_qty -%}
+          <div class="mb-4 p-3 rounded-xl border border-white/10 bg-white/5">
+            <div class="flex items-center gap-2">
+              <svg class="w-4 h-4 text-gingr-yellow flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.5v15m7.5-7.5h-15"/></svg>
+              <p class="text-xs text-white/50">Add <span class="text-white font-semibold">{{ items_needed }} more</span> to unlock <span class="text-gingr-yellow font-semibold">{{ next_tier_discount }}% off</span></p>
+            </div>
+          </div>
+        {% endif %}
+      {% endif %}
+
+      {%- comment -%} ===== LINE ITEMS ===== {%- endcomment -%}
+      <ul class="space-y-4">
+        {% for item in cart.items %}
+          <li class="flex gap-4">
+            {% if item.image %}
+              <div class="w-16 h-16 rounded-lg overflow-hidden bg-white/5 flex-shrink-0">
+                {{ item.image | image_url: width: 128 | image_tag: class: 'w-full h-full object-cover', loading: 'lazy' }}
+              </div>
+            {% endif %}
+            <div class="flex-1 min-w-0">
+              <p class="text-sm font-medium text-white truncate">{{ item.product.title }}</p>
+              {% if item.variant.title != 'Default Title' %}
+                <p class="text-xs text-white/40">{{ item.variant.title }}</p>
+              {% endif %}
+
+              {%- comment -%} Per-item discount hint {%- endcomment -%}
+              {% if settings.bundle_discount_enabled and current_discount > 0 %}
+                {%- assign item_savings = item.final_line_price | times: current_discount | divided_by: 100 -%}
+                <p class="text-[10px] text-green-400 mt-0.5">-{{ current_discount }}% ({{ item_savings | money }} off)</p>
+              {% endif %}
+
+              <div class="flex items-center gap-2 mt-1">
+                <button data-cart-qty="minus" data-line-key="{{ item.key }}" class="w-6 h-6 flex items-center justify-center rounded border border-white/10 text-xs text-white/60 hover:bg-white/10" aria-label="Decrease quantity">−</button>
+                <input data-qty-input="{{ item.key }}" type="text" value="{{ item.quantity }}" class="w-8 text-center text-sm border-0 p-0 bg-transparent text-white" readonly aria-label="Quantity">
+                <button data-cart-qty="plus" data-line-key="{{ item.key }}" class="w-6 h-6 flex items-center justify-center rounded border border-white/10 text-xs text-white/60 hover:bg-white/10" aria-label="Increase quantity">+</button>
+              </div>
+            </div>
+            <p class="text-sm font-bold text-gingr-yellow whitespace-nowrap">{{ item.final_line_price | money }}</p>
+          </li>
+        {% endfor %}
+      </ul>
+
+      {%- comment -%} ===== UPSELL PRODUCT ===== {%- endcomment -%}
+      {% if settings.upsell_enabled and settings.upsell_product != blank %}
+        {%- assign upsell = settings.upsell_product -%}
+        {%- assign upsell_in_cart = false -%}
+        {% for item in cart.items %}
+          {% if item.product.id == upsell.id %}
+            {%- assign upsell_in_cart = true -%}
+            {% break %}
+          {% endif %}
+        {% endfor %}
+
+        {% unless upsell_in_cart %}
+          <div class="mt-6 p-4 rounded-xl border border-white/10 bg-white/5" data-upsell>
+            <p class="text-xs font-bold uppercase tracking-wider text-white/30 mb-3">{{ settings.upsell_heading | default: 'Complete your order' }}</p>
+            <div class="flex items-center gap-4">
+              {% if upsell.featured_image %}
+                <div class="w-14 h-14 rounded-lg overflow-hidden bg-white/5 flex-shrink-0">
+                  {{ upsell.featured_image | image_url: width: 112 | image_tag: class: 'w-full h-full object-cover', loading: 'lazy' }}
+                </div>
+              {% endif %}
+              <div class="flex-1 min-w-0">
+                <p class="text-sm font-medium text-white truncate">{{ upsell.title }}</p>
+                {% if settings.upsell_description != blank %}
+                  <p class="text-xs text-white/40">{{ settings.upsell_description }}</p>
+                {% endif %}
+                <p class="text-sm font-bold text-gingr-yellow mt-0.5">{{ upsell.price | money }}</p>
+              </div>
+              <form action="{{ routes.cart_add_url }}" method="post" class="flex-shrink-0">
+                <input type="hidden" name="id" value="{{ upsell.first_available_variant.id }}">
+                <input type="hidden" name="quantity" value="1">
+                <button type="submit" class="px-4 py-2 rounded-lg text-xs font-bold bg-white/10 text-white hover:bg-white/20 transition-all border border-white/10">
+                  Add
+                </button>
+              </form>
+            </div>
+          </div>
+        {% endunless %}
+      {% endif %}
+
+      {%- comment -%} Subscribe & save nudge {%- endcomment -%}
+      <div class="mt-4 p-3 bg-white/5 border border-white/10 rounded-lg text-center">
+        <p class="text-xs font-medium text-white/60">Subscribe & save 15% on every delivery</p>
+      </div>
+
+    {% endif %}
+  </div>
+
+  {%- comment -%} ===== FOOTER ===== {%- endcomment -%}
+  {% if cart.item_count > 0 %}
+    <div class="px-6 py-4 border-t border-white/10">
+      {%- comment -%} Discount summary {%- endcomment -%}
+      {% if settings.bundle_discount_enabled and current_discount > 0 %}
+        <div class="flex justify-between items-center mb-1">
+          <span class="text-xs text-white/30">Subtotal</span>
+          <span class="text-xs text-white/30 line-through">{{ cart.total_price | money }}</span>
+        </div>
+        <div class="flex justify-between items-center mb-1">
+          <span class="text-xs text-green-400 font-medium">Bundle -{{ current_discount }}%</span>
+          <span class="text-xs text-green-400 font-medium">-{{ savings_cents | money }}</span>
+        </div>
+        <div class="flex justify-between items-center mb-3">
+          <span class="text-sm font-semibold text-white">Total</span>
+          {%- assign final_cents = cart.total_price | minus: savings_cents -%}
+          <span class="text-lg font-bold text-white">{{ final_cents | money }}</span>
+        </div>
+      {% else %}
+        <div class="flex justify-between items-center mb-3">
+          <span class="text-sm text-white/40">Subtotal</span>
+          <span class="text-lg font-bold text-white">{{ cart.total_price | money }}</span>
+        </div>
+      {% endif %}
+      <a href="{{ routes.cart_url }}" class="btn-secondary w-full text-center">Checkout</a>
+    </div>
+  {% endif %}
+</aside>

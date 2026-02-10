@@ -1,0 +1,21 @@
+{%- comment -%}
+  Renders a button.
+  Usage: {% render 'button', label: 'Add to cart', style: 'primary', is_link: false, href: '', type: 'submit' %}
+  Styles: primary, secondary, outline
+{%- endcomment -%}
+
+{%- liquid
+  assign btn_style = style | default: 'primary'
+  assign btn_type = type | default: 'button'
+  assign btn_class = 'btn-' | append: btn_style
+
+  if extra_classes
+    assign btn_class = btn_class | append: ' ' | append: extra_classes
+  endif
+-%}
+
+{% if is_link %}
+  <a href="{{ href }}" class="{{ btn_class }}" {{ attributes }}>{{ label }}</a>
+{% else %}
+  <button type="{{ btn_type }}" class="{{ btn_class }}" {% if disabled %}disabled{% endif %} {{ attributes }}>{{ label }}</button>
+{% endif %}

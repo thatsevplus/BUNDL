@@ -1,0 +1,84 @@
+{%- comment -%}
+  GINGR — Benefits & Ingredients section
+  Pulls from health.* metafields
+{%- endcomment -%}
+
+<section class="section-padding bg-white">
+  <div class="gingr-container">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
+
+      {%- comment -%} Benefits {%- endcomment -%}
+      <div>
+        <h2 class="text-xl font-bold text-gingr-navy mb-6">Why it works</h2>
+        {% if product.metafields.health.benefits.value %}
+          <ul class="space-y-4">
+            {% for benefit in product.metafields.health.benefits.value %}
+              <li class="flex items-start gap-3">
+                <span class="flex-shrink-0 w-6 h-6 rounded-full text-gingr-navy flex items-center justify-center mt-0.5" style="background-color: rgba(255, 225, 78, 0.2);">
+                  {% render 'icon', name: 'check', size: '14' %}
+                </span>
+                <span class="text-sm text-gray-700 leading-relaxed">{{ benefit }}</span>
+              </li>
+            {% endfor %}
+          </ul>
+        {% else %}
+          <p class="text-sm text-gray-500">Benefits information coming soon.</p>
+        {% endif %}
+      </div>
+
+      {%- comment -%} Ingredients & Nutrition {%- endcomment -%}
+      <div>
+        <h2 class="text-xl font-bold text-gingr-navy mb-6">What's inside</h2>
+
+        {% if product.metafields.health.ingredients.value %}
+          <div class="prose prose-sm text-gray-700 mb-6">
+            {{ product.metafields.health.ingredients.value }}
+          </div>
+        {% endif %}
+
+        {%- comment -%} Quick facts {%- endcomment -%}
+        <div class="space-y-2">
+          {% if product.metafields.health.sugar_g.value %}
+            <div class="flex justify-between text-sm py-2 border-b border-gray-100">
+              <span class="text-gray-500">Sugar</span>
+              <span class="font-medium text-gingr-font">{{ product.metafields.health.sugar_g.value }}g</span>
+            </div>
+          {% endif %}
+          {% if product.metafields.health.caffeine_mg.value %}
+            <div class="flex justify-between text-sm py-2 border-b border-gray-100">
+              <span class="text-gray-500">Caffeine</span>
+              <span class="font-medium text-gingr-font">{{ product.metafields.health.caffeine_mg.value }}mg</span>
+            </div>
+          {% endif %}
+          {% if product.metafields.health.flavor_notes.value %}
+            <div class="flex justify-between text-sm py-2 border-b border-gray-100">
+              <span class="text-gray-500">Taste</span>
+              <span class="font-medium text-gingr-font">{{ product.metafields.health.flavor_notes.value }}</span>
+            </div>
+          {% endif %}
+        </div>
+
+        {%- comment -%} Nutrition table {%- endcomment -%}
+        {% if product.metafields.health.nutrition_table.value %}
+          <details class="mt-4">
+            <summary class="text-sm font-medium text-gingr-navy cursor-pointer hover:underline">Full nutrition facts</summary>
+            <div class="prose prose-sm text-gray-700 mt-3">
+              {{ product.metafields.health.nutrition_table.value }}
+            </div>
+          </details>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Product Benefits",
+  "tag": "section",
+  "settings": [],
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  }
+}
+{% endschema %}

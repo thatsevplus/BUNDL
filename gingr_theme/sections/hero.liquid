@@ -1,0 +1,280 @@
+{%- comment -%}
+  GINGR — Hero section v2
+  Bold product showcase with testimonial feel.
+  User can choose BG color per product or leave transparent.
+{%- endcomment -%}
+
+{%- assign bg_color = section.settings.bg_color | default: 'transparent' -%}
+{%- assign bg_gradient_end = section.settings.bg_gradient_end -%}
+
+<section
+  class="relative overflow-hidden min-h-[85vh] md:min-h-[90vh] flex items-center"
+  data-section-id="{{ section.id }}"
+  style="
+    {% if section.settings.bg_gradient_enabled and bg_gradient_end != blank %}
+      background: linear-gradient({{ section.settings.bg_gradient_direction | default: '135deg' }}, {{ bg_color }}, {{ bg_gradient_end }});
+    {% elsif bg_color != 'transparent' and bg_color != blank %}
+      background-color: {{ bg_color }};
+    {% endif %}
+  "
+>
+  {%- comment -%} Optional background image {%- endcomment -%}
+  {% if section.settings.image %}
+    <div class="absolute inset-0">
+      {{ section.settings.image | image_url: width: 1920 | image_tag:
+        class: 'w-full h-full object-cover',
+        style: 'opacity: 0.15;',
+        loading: 'eager'
+      }}
+    </div>
+  {% endif %}
+
+  <div class="relative gingr-container w-full">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
+
+      {%- comment -%} Left: Text content {%- endcomment -%}
+      <div class="text-center lg:text-left order-2 lg:order-1">
+        {% if section.settings.eyebrow != blank %}
+          <p class="inline-block text-xs font-bold uppercase tracking-[0.2em] px-4 py-1.5 rounded-full border mb-6 text-subheading" style="border-color: color-mix(in srgb, var(--text-subheading) 40%, transparent);">
+            {{ section.settings.eyebrow }}
+          </p>
+        {% endif %}
+
+        <h1
+          class="text-4xl md:text-6xl lg:text-7xl font-bold leading-[0.95] tracking-tight"
+          style="font-size: calc(var(--heading-scale, 100) / 100 * clamp(2.5rem, 5vw, 4.5rem));{% if section.settings.heading_color != blank %}color:{{ section.settings.heading_color }};{% endif %}"
+        >
+          {{ section.settings.heading }}
+        </h1>
+
+        {% if section.settings.subheading != blank %}
+          <p class="text-base md:text-lg text-subheading mt-6 leading-relaxed max-w-md mx-auto lg:mx-0">
+            {{ section.settings.subheading }}
+          </p>
+        {% endif %}
+
+        {%- comment -%} CTA buttons {%- endcomment -%}
+        <div class="flex flex-wrap gap-4 mt-8 justify-center lg:justify-start">
+          {% if section.settings.cta_text != blank %}
+            <a href="{{ section.settings.cta_link }}" class="btn-secondary text-base px-8 py-4 no-underline">
+              {{ section.settings.cta_text }}
+            </a>
+          {% endif %}
+          {% if section.settings.cta_secondary_text != blank %}
+            <a href="{{ section.settings.cta_secondary_link }}" class="inline-flex items-center justify-center px-8 py-4 rounded-xl border font-semibold text-base transition-all no-underline text-body hover:bg-white/10" style="border-color: color-mix(in srgb, var(--text-body) 50%, transparent);">
+              {{ section.settings.cta_secondary_text }}
+            </a>
+          {% endif %}
+        </div>
+
+        {%- comment -%} Social proof line — avatars from blocks (image or emoji) {%- endcomment -%}
+        {% if section.settings.social_proof_text != blank %}
+          <div class="flex items-center gap-3 mt-8 justify-center lg:justify-start">
+            <div class="flex -space-x-2">
+              {% assign avatar_blocks = section.blocks | where: 'type', 'avatar' %}
+              {% if avatar_blocks.size > 0 %}
+                {% for block in avatar_blocks %}
+                  <div class="w-8 h-8 rounded-full border-2 border-white/10 flex items-center justify-center overflow-hidden bg-white/20 flex-shrink-0 text-sm" {{ block.shopify_attributes }}>
+                    {% if block.settings.image != blank %}
+                      {{ block.settings.image | image_url: width: 64 | image_tag: class: 'w-full h-full object-cover', loading: 'lazy', alt: '' }}
+                    {% elsif block.settings.emoji != blank %}
+                      <span class="leading-none">{{ block.settings.emoji }}</span>
+                    {% endif %}
+                  </div>
+                {% endfor %}
+              {% else %}
+                {% for i in (1..4) %}
+                  <div class="w-8 h-8 rounded-full bg-white/20 border-2 border-white/10"></div>
+                {% endfor %}
+              {% endif %}
+            </div>
+            <p class="text-sm text-subheading">{{ section.settings.social_proof_text }}</p>
+          </div>
+        {% endif %}
+      </div>
+
+      {%- comment -%} Right: Product image — big, bold, overflow {%- endcomment -%}
+      <div class="relative order-1 lg:order-2 flex items-center justify-center">
+        {% if section.settings.product_image %}
+          <div class="relative w-full max-w-md lg:max-w-lg mx-auto">
+            {%- comment -%} Optional glow behind product {%- endcomment -%}
+            {% if section.settings.product_glow_enabled and section.settings.product_bg_color != blank %}
+              <div class="absolute inset-0 rounded-full blur-[80px] opacity-40" style="background: {{ section.settings.product_bg_color }};"></div>
+            {% endif %}
+            {{ section.settings.product_image | image_url: width: 900 | image_tag:
+              class: 'relative w-full h-auto drop-shadow-2xl',
+              loading: 'eager',
+              widths: '400,600,900'
+            }}
+          </div>
+        {% else %}
+          {%- comment -%} Placeholder {%- endcomment -%}
+          <div class="w-full max-w-md aspect-square rounded-3xl bg-white/5 border border-white/10 flex items-center justify-center">
+            <div class="text-center text-white/20">
+              <svg class="w-16 h-16 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909M3.75 21h16.5A2.25 2.25 0 0 0 22.5 18.75V5.25A2.25 2.25 0 0 0 20.25 3H3.75A2.25 2.25 0 0 0 1.5 5.25v13.5A2.25 2.25 0 0 0 3.75 21Z"/></svg>
+              <p class="text-sm">Upload product image</p>
+            </div>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Hero",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Background"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background color",
+      "default": "#0b0f0e"
+    },
+    {
+      "type": "checkbox",
+      "id": "bg_gradient_enabled",
+      "label": "Enable gradient",
+      "default": false
+    },
+    {
+      "type": "color",
+      "id": "bg_gradient_end",
+      "label": "Gradient end color",
+      "default": "#1a1a2e"
+    },
+    {
+      "type": "text",
+      "id": "bg_gradient_direction",
+      "label": "Gradient direction (CSS)",
+      "default": "135deg"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Background image (optional)"
+    },
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow text",
+      "default": "Ginger, done right."
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Daily ginger shots. Real function."
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Heading color",
+      "info": "Leave blank to use theme default"
+    },
+    {
+      "type": "textarea",
+      "id": "subheading",
+      "label": "Subheading",
+      "default": "Clean ingredients. One shot a day. Feel the difference."
+    },
+    {
+      "type": "text",
+      "id": "cta_text",
+      "label": "Primary button text",
+      "default": "Shop now"
+    },
+    {
+      "type": "url",
+      "id": "cta_link",
+      "label": "Primary button link"
+    },
+    {
+      "type": "text",
+      "id": "cta_secondary_text",
+      "label": "Secondary button text",
+      "default": "Learn more"
+    },
+    {
+      "type": "url",
+      "id": "cta_secondary_link",
+      "label": "Secondary button link"
+    },
+    {
+      "type": "text",
+      "id": "social_proof_text",
+      "label": "Social proof text",
+      "default": "Loved by 2,000+ people"
+    },
+    {
+      "type": "header",
+      "content": "Product display"
+    },
+    {
+      "type": "image_picker",
+      "id": "product_image",
+      "label": "Product image (PNG recommended)"
+    },
+    {
+      "type": "checkbox",
+      "id": "product_glow_enabled",
+      "label": "Enable product glow",
+      "default": false
+    },
+    {
+      "type": "color",
+      "id": "product_bg_color",
+      "label": "Product glow color",
+      "default": "#52b788"
+    },
+    {
+      "type": "header",
+      "content": "Social proof icons"
+    },
+    {
+      "type": "paragraph",
+      "content": "Add blocks below to fill the circles next to the social proof text. Use an image (face, logo) or an emoji for each."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "avatar",
+      "name": "Icon",
+      "limit": 9,
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image (face, logo)"
+        },
+        {
+          "type": "text",
+          "id": "emoji",
+          "label": "Or emoji",
+          "placeholder": "😊"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Hero",
+      "blocks": [
+        { "type": "avatar", "settings": { "emoji": "😊" }},
+        { "type": "avatar", "settings": { "emoji": "👍" }},
+        { "type": "avatar", "settings": { "emoji": "💪" }},
+        { "type": "avatar", "settings": { "emoji": "✨" }}
+      ]
+    }
+  ]
+}
+{% endschema %}

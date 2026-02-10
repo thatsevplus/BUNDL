@@ -1,0 +1,24 @@
+{%- comment -%}
+  Renders the bundle/pack price comparison.
+  Usage: {% render 'bundle-price', variant: variant, base_variant: base_variant %}
+  base_variant = the single-unit variant (pack 1), used to calculate savings.
+{%- endcomment -%}
+
+{%- liquid
+  assign v = variant
+  assign base = base_variant
+-%}
+
+<div class="flex items-baseline gap-2">
+  <span class="text-xl font-bold text-gingr-navy">{{ v.price | money }}</span>
+  {% if base %}
+    {% if base.price > 0 %}
+      {% if v.price < base.price %}
+        {% assign savings_pct = base.price | minus: v.price | times: 100 | divided_by: base.price %}
+        <span class="gingr-badge bg-gingr-yellow text-gingr-navy font-bold">
+          Save {{ savings_pct }}%
+        </span>
+      {% endif %}
+    {% endif %}
+  {% endif %}
+</div>

@@ -1,0 +1,72 @@
+{%- comment -%}
+  GINGR — Value propositions / USPs
+{%- endcomment -%}
+
+<section class="py-8 md:py-12 border-y border-white/5">
+  <div class="gingr-container">
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
+      {% for block in section.blocks %}
+        <div class="flex flex-col items-center text-center" {{ block.shopify_attributes }}>
+          <div class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center mb-3" style="color:var(--color-accent);">
+            {% render 'icon', name: block.settings.icon, size: '20' %}
+          </div>
+          <p class="text-sm font-semibold">{{ block.settings.title }}</p>
+          <p class="text-xs text-subheading mt-1">{{ block.settings.description }}</p>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Value propositions",
+  "tag": "section",
+  "settings": [],
+  "blocks": [
+    {
+      "type": "prop",
+      "name": "Value prop",
+      "settings": [
+        {
+          "type": "select",
+          "id": "icon",
+          "label": "Icon",
+          "options": [
+            { "value": "truck", "label": "Truck" },
+            { "value": "shield", "label": "Shield" },
+            { "value": "leaf", "label": "Leaf" },
+            { "value": "lightning", "label": "Lightning" },
+            { "value": "star", "label": "Star" },
+            { "value": "check", "label": "Check" }
+          ],
+          "default": "truck"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "default": "Free shipping"
+        },
+        {
+          "type": "text",
+          "id": "description",
+          "label": "Description",
+          "default": "On orders over €50"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Value propositions",
+      "blocks": [
+        { "type": "prop", "settings": { "icon": "truck", "title": "Free shipping", "description": "On orders over €50" }},
+        { "type": "prop", "settings": { "icon": "leaf", "title": "Clean ingredients", "description": "No junk, no fillers" }},
+        { "type": "prop", "settings": { "icon": "lightning", "title": "Real function", "description": "1 shot = 1 purpose" }},
+        { "type": "prop", "settings": { "icon": "shield", "title": "Pause anytime", "description": "Flexible subscriptions" }}
+      ]
+    }
+  ]
+}
+{% endschema %}

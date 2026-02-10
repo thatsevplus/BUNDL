@@ -1,0 +1,176 @@
+{%- comment -%}
+  GINGR — Main Product Section
+  Gallery + info + bundle selector + subscription + CTA
+{%- endcomment -%}
+
+{%- assign current_variant = product.selected_or_first_available_variant -%}
+{%- assign base_variant = product.variants | first -%}
+
+<section class="section-padding" data-section-id="{{ section.id }}">
+  <div class="gingr-container">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
+
+      {%- comment -%} ===== LEFT: Media gallery ===== {%- endcomment -%}
+      <div class="space-y-3">
+        {%- comment -%} Main image {%- endcomment -%}
+        {% if product.featured_image %}
+          <div class="aspect-square rounded-2xl overflow-hidden bg-gray-50">
+            {{ product.featured_image | image_url: width: 900 | image_tag:
+              class: 'w-full h-full object-cover',
+              loading: 'eager',
+              widths: '400,600,900'
+            }}
+          </div>
+        {% endif %}
+
+        {%- comment -%} Thumbnails {%- endcomment -%}
+        {% if product.images.size > 1 %}
+          <div class="grid grid-cols-4 gap-2">
+            {% for image in product.images %}
+              <button class="aspect-square rounded-lg overflow-hidden bg-gray-50 border-2 {% if forloop.first %}border-gingr-navy{% else %}border-transparent{% endif %} hover:border-gingr-navy/50 transition-colors">
+                {{ image | image_url: width: 200 | image_tag: class: 'w-full h-full object-cover', loading: 'lazy' }}
+              </button>
+            {% endfor %}
+          </div>
+        {% endif %}
+      </div>
+
+      {%- comment -%} ===== RIGHT: Product info ===== {%- endcomment -%}
+      <div class="lg:sticky lg:top-24 lg:self-start space-y-6">
+
+        {%- comment -%} Badges {%- endcomment -%}
+        {% if product.metafields.health.dietary_badges.value %}
+          <div class="flex flex-wrap gap-2">
+            {% for badge_text in product.metafields.health.dietary_badges.value %}
+              {% render 'badge', text: badge_text %}
+            {% endfor %}
+          </div>
+        {% endif %}
+
+        {%- comment -%} Title + Price {%- endcomment -%}
+        <div>
+          <h1 class="text-2xl md:text-3xl font-bold text-gingr-navy leading-tight">{{ product.title }}</h1>
+          <div class="mt-2">
+            {% render 'price', product: product, variant: current_variant %}
+          </div>
+        </div>
+
+        {%- comment -%} Short description {%- endcomment -%}
+        {% if product.description != blank %}
+          <p class="text-sm text-gray-600 leading-relaxed">{{ product.description | strip_html | truncate: 200 }}</p>
+        {% endif %}
+
+        {%- comment -%} ===== FORM ===== {%- endcomment -%}
+        {% form 'product', product %}
+          <input type="hidden" name="id" value="{{ current_variant.id }}">
+
+          {%- comment -%} Bundle selector (pack 1/6/12) {%- endcomment -%}
+          {% if product.variants.size > 1 %}
+            <div class="space-y-2" data-bundle-selector>
+              <p class="text-sm font-semibold text-gingr-font">Choose your pack</p>
+              <div class="grid grid-cols-{{ product.variants.size | at_most: 4 }} gap-2">
+                {% for variant in product.variants %}
+                  {%- comment -%} Calculate savings vs single (first variant) {%- endcomment -%}
+                  {%- assign savings = 0 -%}
+                  {% if base_variant.price > 0 and variant.price < base_variant.price %}
+                    {%- assign savings = base_variant.price | minus: variant.price | times: 100 | divided_by: base_variant.price -%}
+                  {% endif %}
+
+                  <button type="button"
+                    data-bundle-option
+                    data-variant-id="{{ variant.id }}"
+                    data-price="{{ variant.price | money }}"
+                    data-savings="{{ savings }}"
+                    data-unit-price="{% if variant.unit_price %}{{ variant.unit_price | money }}/unit{% endif %}"
+                    class="relative p-3 rounded-lg border-2 text-center transition-all cursor-pointer
+                    {% if variant == current_variant %}
+                      bg-gingr-navy text-white ring-2 ring-gingr-navy
+                    {% else %}
+                      bg-white text-gingr-navy border-gray-200 hover:border-gingr-navy/50
+                    {% endif %}"
+                  >
+                    <span class="block text-sm font-bold">{{ variant.title }}</span>
+                    <span class="block text-xs mt-0.5">{{ variant.price | money }}</span>
+                    {% if savings > 0 %}
+                      <span class="absolute -top-2 -right-2 bg-gingr-yellow text-gingr-navy text-[10px] font-bold px-1.5 py-0.5 rounded-full">
+                        -{{ savings }}%
+                      </span>
+                    {% endif %}
+                  </button>
+                {% endfor %}
+              </div>
+
+              {%- comment -%} Live price display {%- endcomment -%}
+              <div class="flex items-center gap-3 mt-2">
+                <span data-bundle-price class="text-xl font-bold text-gingr-navy">{{ current_variant.price | money }}</span>
+                <span data-bundle-savings class="gingr-badge bg-gingr-yellow text-gingr-navy font-bold {% if current_variant == base_variant %}hidden{% endif %}">
+                  {% if current_variant != base_variant %}
+                    {%- assign cv_savings = base_variant.price | minus: current_variant.price | times: 100 | divided_by: base_variant.price -%}
+                    Save {{ cv_savings }}%
+                  {% endif %}
+                </span>
+              </div>
+            </div>
+          {% endif %}
+
+          {%- comment -%} Subscription slot {%- endcomment -%}
+          {% render 'subscription-slot', product: product %}
+
+          {%- comment -%} Add to cart {%- endcomment -%}
+          <button type="submit" class="btn-secondary w-full mt-4 text-base py-4"
+            {% unless current_variant.available %}disabled{% endunless %}
+          >
+            {% if current_variant.available %}
+              Add to cart
+            {% else %}
+              Sold out
+            {% endif %}
+          </button>
+          {{ form | payment_button }}
+        {% endform %}
+
+        {%- comment -%} Trust row {%- endcomment -%}
+        <div class="grid grid-cols-3 gap-4 pt-4 border-t border-gray-100">
+          <div class="text-center">
+            <div class="text-gingr-navy mb-1">{% render 'icon', name: 'truck', size: '20' %}</div>
+            <p class="text-xs text-gray-500">Free shipping 50€+</p>
+          </div>
+          <div class="text-center">
+            <div class="text-gingr-navy mb-1">{% render 'icon', name: 'shield', size: '20' %}</div>
+            <p class="text-xs text-gray-500">Secure payment</p>
+          </div>
+          <div class="text-center">
+            <div class="text-gingr-navy mb-1">{% render 'icon', name: 'leaf', size: '20' %}</div>
+            <p class="text-xs text-gray-500">Clean ingredients</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{%- comment -%} Sticky mobile CTA {%- endcomment -%}
+<div class="sticky-cta" id="sticky-cta">
+  <div class="flex items-center justify-between gap-4">
+    <div>
+      <p class="text-sm font-bold text-gingr-navy">{{ product.title }}</p>
+      <p data-bundle-price class="text-sm font-bold text-gingr-navy">{{ current_variant.price | money }}</p>
+    </div>
+    <button form="product-form-{{ product.id }}" type="submit" class="btn-secondary px-8 py-3 text-sm"
+      {% unless current_variant.available %}disabled{% endunless %}
+    >
+      {% if current_variant.available %}Add to cart{% else %}Sold out{% endif %}
+    </button>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Product Main",
+  "tag": "section",
+  "settings": [],
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  }
+}
+{% endschema %}

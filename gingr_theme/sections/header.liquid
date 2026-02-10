@@ -1,0 +1,127 @@
+<header
+  class="fixed top-0 left-0 right-0 z-50 transition-all duration-500"
+  data-section-id="{{ section.id }}"
+  data-header
+>
+  {%- comment -%} Header inner — starts opaque, goes translucent on scroll {%- endcomment -%}
+  <div class="header-bg absolute inset-0 bg-black/0 backdrop-blur-0 transition-all duration-500 pointer-events-none" data-header-bg></div>
+
+  <div class="relative gingr-container flex items-center justify-between py-5 md:py-6">
+
+    {%- comment -%} Left nav (desktop) {%- endcomment -%}
+    <nav class="hidden lg:flex items-center gap-8 flex-1" aria-label="Main navigation left">
+      {% assign links = section.settings.menu.links %}
+      {% assign half = links.size | divided_by: 2 %}
+      {% for link in links limit: half %}
+        <a href="{{ link.url }}" class="text-sm font-semibold uppercase tracking-wider text-white/80 hover:text-white transition-colors no-underline{% if link.active %} text-white{% endif %}">
+          {{ link.title }}
+        </a>
+      {% endfor %}
+    </nav>
+
+    {%- comment -%} Centered Logo — BIG {%- endcomment -%}
+    <a href="{{ routes.root_url }}" class="flex items-center justify-center no-underline flex-shrink-0">
+      {% if section.settings.logo %}
+        {{ section.settings.logo | image_url: width: 300 | image_tag:
+          class: 'h-12 md:h-16 w-auto transition-all duration-300',
+          loading: 'eager',
+          id: 'header-logo'
+        }}
+      {% else %}
+        <span class="text-2xl md:text-3xl font-bold text-white tracking-tight uppercase">{{ shop.name }}</span>
+      {% endif %}
+    </a>
+
+    {%- comment -%} Right nav (desktop) {%- endcomment -%}
+    <nav class="hidden lg:flex items-center gap-8 flex-1 justify-end" aria-label="Main navigation right">
+      {% for link in links offset: half %}
+        <a href="{{ link.url }}" class="text-sm font-semibold uppercase tracking-wider text-white/80 hover:text-white transition-colors no-underline{% if link.active %} text-white{% endif %}">
+          {{ link.title }}
+        </a>
+      {% endfor %}
+
+      {%- comment -%} Icons {%- endcomment -%}
+      <div class="flex items-center gap-5 ml-4">
+        {% if shop.customer_accounts_enabled %}
+          <a href="{{ routes.account_url }}" class="text-white/80 hover:text-white transition-colors" aria-label="Account">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.5 20.25a8.25 8.25 0 0 1 16.5 0"/></svg>
+          </a>
+        {% endif %}
+        <a href="{{ routes.cart_url }}" class="relative text-white/80 hover:text-white transition-colors" data-cart-toggle aria-label="Cart">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.356-1.993 1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 0 1-1.12-1.243l1.264-12A1.125 1.125 0 0 1 5.513 7.5h12.974c.576 0 1.059.435 1.119 1.007ZM8.625 10.5a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm7.5 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z"/></svg>
+          {% if cart.item_count > 0 %}
+            <span data-cart-count class="absolute -top-1.5 -right-1.5 bg-gingr-yellow text-gingr-navy text-[10px] font-bold rounded-full w-4 h-4 flex items-center justify-center">
+              {{ cart.item_count }}
+            </span>
+          {% else %}
+            <span data-cart-count class="hidden absolute -top-1.5 -right-1.5 bg-gingr-yellow text-gingr-navy text-[10px] font-bold rounded-full w-4 h-4 flex items-center justify-center"></span>
+          {% endif %}
+        </a>
+      </div>
+    </nav>
+
+    {%- comment -%} Mobile: icons + hamburger {%- endcomment -%}
+    <div class="flex items-center gap-4 lg:hidden">
+      <a href="{{ routes.cart_url }}" class="relative text-white/80 hover:text-white" data-cart-toggle aria-label="Cart">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.356-1.993 1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 0 1-1.12-1.243l1.264-12A1.125 1.125 0 0 1 5.513 7.5h12.974c.576 0 1.059.435 1.119 1.007ZM8.625 10.5a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm7.5 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z"/></svg>
+        {% if cart.item_count > 0 %}
+          <span data-cart-count class="absolute -top-1.5 -right-1.5 bg-gingr-yellow text-gingr-navy text-[10px] font-bold rounded-full w-4 h-4 flex items-center justify-center">
+            {{ cart.item_count }}
+          </span>
+        {% else %}
+          <span data-cart-count class="hidden absolute -top-1.5 -right-1.5 bg-gingr-yellow text-gingr-navy text-[10px] font-bold rounded-full w-4 h-4 flex items-center justify-center"></span>
+        {% endif %}
+      </a>
+      <button class="text-white/80 hover:text-white" data-mobile-menu-toggle aria-label="Menu" aria-expanded="false">
+        <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"/></svg>
+      </button>
+    </div>
+  </div>
+
+  {%- comment -%} Mobile menu — full screen overlay {%- endcomment -%}
+  <nav class="fixed inset-0 z-[60] bg-black/95 backdrop-blur-xl hidden flex-col items-center justify-center gap-8" data-mobile-menu aria-label="Mobile navigation">
+    <button class="absolute top-6 right-6 text-white/80 hover:text-white" data-mobile-menu-close aria-label="Close menu">
+      <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6 18 18 6M6 6l12 12"/></svg>
+    </button>
+    {% for link in section.settings.menu.links %}
+      <a href="{{ link.url }}" class="text-2xl font-bold text-white/80 hover:text-white uppercase tracking-wider no-underline transition-colors">
+        {{ link.title }}
+      </a>
+    {% endfor %}
+    {% if shop.customer_accounts_enabled %}
+      <a href="{{ routes.account_url }}" class="text-lg font-semibold text-white/60 hover:text-white uppercase tracking-wider no-underline transition-colors">Account</a>
+    {% endif %}
+  </nav>
+</header>
+
+{%- comment -%} Spacer to prevent content from hiding behind fixed header {%- endcomment -%}
+<div class="h-[72px] md:h-[88px]" data-header-spacer></div>
+
+{% schema %}
+{
+  "name": "Header",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "logo",
+      "label": "Logo"
+    },
+    {
+      "type": "range",
+      "id": "logo_height",
+      "min": 24,
+      "max": 80,
+      "step": 4,
+      "unit": "px",
+      "label": "Logo height (desktop)",
+      "default": 64
+    },
+    {
+      "type": "link_list",
+      "id": "menu",
+      "label": "Menu",
+      "default": "main-menu"
+    }
+  ]
+}
+{% endschema %}

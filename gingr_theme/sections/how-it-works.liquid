@@ -1,0 +1,130 @@
+{%- comment -%}
+  GINGR — How It Works
+  Step-by-step guide — reduces friction, builds confidence.
+{%- endcomment -%}
+
+<section class="section-padding" data-section-id="{{ section.id }}">
+  <div class="gingr-container">
+    <div class="text-center mb-12">
+      {% if section.settings.eyebrow != blank %}
+        <p class="text-xs font-bold uppercase tracking-[0.2em] text-subheading mb-3">{{ section.settings.eyebrow }}</p>
+      {% endif %}
+      <h2 class="text-3xl md:text-4xl font-bold">{{ section.settings.heading }}</h2>
+      {% if section.settings.subheading != blank %}
+        <p class="text-base text-subheading mt-3 max-w-lg mx-auto">{{ section.settings.subheading }}</p>
+      {% endif %}
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-{{ section.blocks.size | at_most: 4 }} gap-6 max-w-5xl mx-auto">
+      {% for block in section.blocks %}
+        <div class="relative text-center" {{ block.shopify_attributes }}>
+          {%- comment -%} Step number {%- endcomment -%}
+          <div class="w-12 h-12 mx-auto mb-5 rounded-full flex items-center justify-center"
+               style="background:color-mix(in srgb, var(--color-accent) 15%, transparent);border:1px solid color-mix(in srgb, var(--color-accent) 25%, transparent);">
+            <span class="text-lg font-bold" style="color:var(--color-accent);">{{ forloop.index }}</span>
+          </div>
+
+          {%- comment -%} Connector line (desktop) {%- endcomment -%}
+          {% unless forloop.last %}
+            <div class="hidden md:block absolute top-6 left-[calc(50%+30px)] right-[calc(-50%+30px)] h-px bg-white/10"></div>
+          {% endunless %}
+
+          {%- comment -%} Icon {%- endcomment -%}
+          {% if block.settings.image %}
+            <div class="w-20 h-20 mx-auto mb-4 rounded-2xl overflow-hidden bg-white/5 border border-white/10">
+              {{ block.settings.image | image_url: width: 160 | image_tag:
+                class: 'w-full h-full object-cover',
+                loading: 'lazy'
+              }}
+            </div>
+          {% endif %}
+
+          <h3 class="text-base font-bold mb-2">{{ block.settings.title }}</h3>
+          {% if block.settings.description != blank %}
+            <p class="text-sm text-subheading leading-relaxed max-w-xs mx-auto">{{ block.settings.description }}</p>
+          {% endif %}
+        </div>
+      {% endfor %}
+    </div>
+
+    {% if section.settings.cta_text != blank %}
+      <div class="text-center mt-10">
+        <a href="{{ section.settings.cta_link }}" class="btn-secondary no-underline">{{ section.settings.cta_text }}</a>
+      </div>
+    {% endif %}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "How it works",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow text",
+      "default": "Simple as 1-2-3"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "How it works"
+    },
+    {
+      "type": "text",
+      "id": "subheading",
+      "label": "Subheading",
+      "default": "Getting started with GINGR takes 30 seconds."
+    },
+    {
+      "type": "text",
+      "id": "cta_text",
+      "label": "Button text",
+      "default": "Start now"
+    },
+    {
+      "type": "url",
+      "id": "cta_link",
+      "label": "Button link"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "step",
+      "name": "Step",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "default": "Choose your shot"
+        },
+        {
+          "type": "textarea",
+          "id": "description",
+          "label": "Description",
+          "default": "Pick from Energy, Immunity, Focus, Digest, or Recover."
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Icon image (optional)"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "How it works",
+      "blocks": [
+        { "type": "step", "settings": { "title": "Choose your shot", "description": "Pick the function that fits your needs — Energy, Immunity, Focus, Digest, or Recovery." }},
+        { "type": "step", "settings": { "title": "Pick your pack", "description": "Go with 6, 12, or 24 shots. The more you buy, the more you save." }},
+        { "type": "step", "settings": { "title": "Subscribe or one-time", "description": "Get it once or subscribe for 15% off every delivery. Cancel anytime." }},
+        { "type": "step", "settings": { "title": "Feel the difference", "description": "One shot a day. Organic ginger working for you, every single morning." }}
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,25 @@
+{%- comment -%}
+  Renders a dietary/product badge.
+  Usage: {% render 'badge', text: 'Vegan', style: 'default' %}
+  Styles: default, energy, immunity, focus, recover, digest
+{%- endcomment -%}
+
+{%- liquid
+  assign badge_style = style | default: 'default'
+  case badge_style
+    when 'energy'
+      assign classes = 'bg-gingr-energy/20 text-gingr-energy-dark'
+    when 'immunity'
+      assign classes = 'bg-gingr-immunity/20 text-gingr-immunity-dark'
+    when 'focus'
+      assign classes = 'bg-gingr-focus/20 text-gingr-focus-dark'
+    when 'recover'
+      assign classes = 'bg-gingr-recover/20 text-gingr-recover-dark'
+    when 'digest'
+      assign classes = 'bg-gingr-digest/20 text-gingr-digest-dark'
+    else
+      assign classes = 'bg-gray-100 text-gingr-font'
+  endcase
+-%}
+
+<span class="gingr-badge {{ classes }}">{{ text }}</span>

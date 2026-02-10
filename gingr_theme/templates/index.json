@@ -1,0 +1,276 @@
+{
+  "sections": {
+    "hero": {
+      "type": "hero",
+      "settings": {},
+      "blocks": {
+        "avatar1": { "type": "avatar", "settings": { "emoji": "😊" }},
+        "avatar2": { "type": "avatar", "settings": { "emoji": "👍" }},
+        "avatar3": { "type": "avatar", "settings": { "emoji": "💪" }},
+        "avatar4": { "type": "avatar", "settings": { "emoji": "✨" }}
+      },
+      "block_order": ["avatar1", "avatar2", "avatar3", "avatar4"]
+    },
+    "value-props": {
+      "type": "value-props",
+      "settings": {},
+      "blocks": {
+        "b1": { "type": "prop", "settings": { "icon": "truck", "title": "Free shipping", "description": "On orders over €50" }},
+        "b2": { "type": "prop", "settings": { "icon": "leaf", "title": "Clean ingredients", "description": "No junk, no fillers" }},
+        "b3": { "type": "prop", "settings": { "icon": "lightning", "title": "Real function", "description": "1 shot = 1 purpose" }},
+        "b4": { "type": "prop", "settings": { "icon": "shield", "title": "Pause anytime", "description": "Flexible subscriptions" }}
+      },
+      "block_order": ["b1", "b2", "b3", "b4"]
+    },
+    "product-carousel": {
+      "type": "product-carousel",
+      "settings": {
+        "heading": "Our shots",
+        "subheading": "One shot, one function. Pick yours."
+      },
+      "blocks": {
+        "s1": {
+          "type": "product_slide",
+          "settings": {
+            "eyebrow": "60ml shot",
+            "title": "GINGR ENERGY",
+            "subtitle": "Morning shot to kickstart your day with clean energy.",
+            "ingredients": "Ginger · Lemon · Guarana",
+            "badge": "⚡ Energy",
+            "cta": "View product",
+            "color_from": "#ffd400",
+            "color_to": "#c6a600"
+          }
+        },
+        "s2": {
+          "type": "product_slide",
+          "settings": {
+            "eyebrow": "60ml shot",
+            "title": "GINGR IMMUNITY",
+            "subtitle": "Daily defense. Strengthen your immune system naturally.",
+            "ingredients": "Ginger · Turmeric · Vitamin C",
+            "badge": "🛡️ Immunity",
+            "cta": "View product",
+            "color_from": "#e3a018",
+            "color_to": "#9e6b00"
+          }
+        },
+        "s3": {
+          "type": "product_slide",
+          "settings": {
+            "eyebrow": "60ml shot",
+            "title": "GINGR FOCUS",
+            "subtitle": "Clarity & concentration for your work sessions.",
+            "ingredients": "Ginger · Ginseng · Matcha",
+            "badge": "🧠 Focus",
+            "cta": "View product",
+            "color_from": "#006d77",
+            "color_to": "#004b52"
+          }
+        },
+        "s4": {
+          "type": "product_slide",
+          "settings": {
+            "eyebrow": "60ml shot",
+            "title": "GINGR DIGEST",
+            "subtitle": "Support digestion after meals, naturally.",
+            "ingredients": "Ginger · Apple Cider · Fennel",
+            "badge": "🌿 Digest",
+            "cta": "View product",
+            "color_from": "#7cb342",
+            "color_to": "#7cb342"
+          }
+        },
+        "s5": {
+          "type": "product_slide",
+          "settings": {
+            "eyebrow": "60ml shot",
+            "title": "GINGR RECOVER",
+            "subtitle": "Post-workout recovery. Fight fatigue fast.",
+            "ingredients": "Ginger · Beetroot · Magnesium",
+            "badge": "💪 Recover",
+            "cta": "View product",
+            "color_from": "#c1121f",
+            "color_to": "#780000"
+          }
+        }
+      },
+      "block_order": ["s1", "s2", "s3", "s4", "s5"]
+    },
+    "how-it-works": {
+      "type": "how-it-works",
+      "settings": {},
+      "blocks": {
+        "hw1": { "type": "step", "settings": { "title": "Choose your shot", "description": "Pick the function that fits your needs — Energy, Immunity, Focus, Digest, or Recovery." }},
+        "hw2": { "type": "step", "settings": { "title": "Pick your pack", "description": "Go with 6, 12, or 24 shots. The more you buy, the more you save." }},
+        "hw3": { "type": "step", "settings": { "title": "Subscribe or one-time", "description": "Get it once or subscribe for 15% off every delivery. Cancel anytime." }},
+        "hw4": { "type": "step", "settings": { "title": "Feel the difference", "description": "One shot a day. Organic ginger working for you, every single morning." }}
+      },
+      "block_order": ["hw1", "hw2", "hw3", "hw4"]
+    },
+    "info-tabs": {
+      "type": "info-tabs",
+      "settings": {
+        "heading": "Why GINGR?",
+        "subheading": "Everything you need to know."
+      },
+      "blocks": {
+        "t1": {
+          "type": "tab",
+          "settings": {
+            "tab_label": "Ingredients",
+            "heading": "100% Clean ingredients",
+            "description": "Organic ginger, functional superfoods. No fillers, no preservatives.",
+            "point_1": "Cold-pressed for maximum potency",
+            "point_2": "Certified organic ginger",
+            "point_3": "Zero artificial ingredients"
+          }
+        },
+        "t2": {
+          "type": "tab",
+          "settings": {
+            "tab_label": "How it works",
+            "heading": "One shot. One function.",
+            "description": "Each shot is designed around a single purpose. Pick the one that fits your day.",
+            "point_1": "Take one shot in the morning",
+            "point_2": "Feel the difference in days",
+            "point_3": "Build a daily routine"
+          }
+        },
+        "t3": {
+          "type": "tab",
+          "settings": {
+            "tab_label": "Subscribe",
+            "heading": "Save 15% forever",
+            "description": "Subscribe and get your shots delivered on your schedule. Pause or cancel anytime.",
+            "point_1": "15% off every order",
+            "point_2": "Free shipping included",
+            "point_3": "Flexible — skip or pause anytime"
+          }
+        }
+      },
+      "block_order": ["t1", "t2", "t3"]
+    },
+    "comparison": {
+      "type": "product-comparison",
+      "settings": {},
+      "blocks": {
+        "c1": { "type": "product_col", "settings": { "name": "ENERGY", "tagline": "Clean energy", "ingredient": "Guarana", "benefit": "Natural energy boost", "best_for": "Morning fatigue", "when": "Morning" }},
+        "c2": { "type": "product_col", "settings": { "name": "IMMUNITY", "tagline": "Daily defense", "ingredient": "Turmeric + Vit C", "benefit": "Immune support", "best_for": "Staying healthy", "when": "Any time" }},
+        "c3": { "type": "product_col", "settings": { "name": "FOCUS", "tagline": "Clarity", "ingredient": "Ginseng + Matcha", "benefit": "Mental clarity", "best_for": "Work sessions", "when": "Before work" }},
+        "c4": { "type": "product_col", "settings": { "name": "DIGEST", "tagline": "Gut health", "ingredient": "Apple Cider + Fennel", "benefit": "Better digestion", "best_for": "After meals", "when": "After eating" }},
+        "c5": { "type": "product_col", "settings": { "name": "RECOVER", "tagline": "Recovery", "ingredient": "Beetroot + Magnesium", "benefit": "Faster recovery", "best_for": "Post-workout", "when": "After training" }}
+      },
+      "block_order": ["c1", "c2", "c3", "c4", "c5"]
+    },
+    "brand-story": {
+      "type": "brand-story",
+      "settings": {},
+      "blocks": {
+        "bs1": {
+          "type": "story",
+          "settings": {
+            "eyebrow": "Our ginger shots",
+            "heading": "Real ingredients. Real function.",
+            "description": "We combine fresh organic ginger with functional superfoods and turn them into powerful 60ml shots. Raw, potent, and effective — no gimmicks."
+          }
+        },
+        "tp1": { "type": "trust_point", "settings": { "emoji": "✅", "text": "100% organic ginger base" }},
+        "tp2": { "type": "trust_point", "settings": { "emoji": "✅", "text": "Cold-pressed for maximum potency" }},
+        "tp3": { "type": "trust_point", "settings": { "emoji": "🚫", "text": "No additives · No preservatives · No fillers" }},
+        "bs2": {
+          "type": "story",
+          "settings": {
+            "eyebrow": "Built for your routine",
+            "heading": "One shot a day. Feel the difference.",
+            "description": "Each GINGR shot is designed around a single function. Energy, Immunity, Focus, Digest, or Recovery — pick the one that fits your day."
+          }
+        },
+        "tp4": { "type": "trust_point", "settings": { "emoji": "🎯", "text": "1 shot = 1 function" }},
+        "tp5": { "type": "trust_point", "settings": { "emoji": "📅", "text": "Designed for daily use" }},
+        "tp6": { "type": "trust_point", "settings": { "emoji": "💰", "text": "Subscribe & save 15%" }}
+      },
+      "block_order": ["bs1", "tp1", "tp2", "tp3", "bs2", "tp4", "tp5", "tp6"]
+    },
+    "ingredients": {
+      "type": "ingredients-spotlight",
+      "settings": {},
+      "blocks": {
+        "i1": { "type": "ingredient", "settings": { "name": "Organic Ginger", "label": "Hero ingredient", "description": "Fresh organic ginger root, cold-pressed for maximum potency. Anti-inflammatory, aids digestion, and boosts immunity.", "benefit_1": "Powerful anti-inflammatory", "benefit_2": "Supports healthy digestion", "benefit_3": "Boosts natural immunity" }},
+        "i2": { "type": "ingredient", "settings": { "name": "Turmeric", "label": "Superfood", "description": "Golden spice with curcumin — nature's most powerful antioxidant." }},
+        "i3": { "type": "ingredient", "settings": { "name": "Guarana", "label": "Natural energy", "description": "Clean caffeine from the Amazon. Sustained energy without the crash." }},
+        "i4": { "type": "ingredient", "settings": { "name": "Matcha", "label": "Focus", "description": "Japanese green tea powder. L-theanine for calm focus and concentration." }}
+      },
+      "block_order": ["i1", "i2", "i3", "i4"]
+    },
+    "bundle-highlight": {
+      "type": "bundle-highlight",
+      "settings": {},
+      "blocks": {
+        "p1": { "type": "product", "settings": { "title": "GINGR ENERGY", "subtitle": "Clean energy to kickstart your day.", "starting_price": "€4.50" }},
+        "p2": { "type": "product", "settings": { "title": "GINGR IMMUNITY", "subtitle": "Daily defense for your immune system.", "starting_price": "€4.50" }},
+        "p3": { "type": "product", "settings": { "title": "GINGR FOCUS", "subtitle": "Clarity & concentration.", "starting_price": "€4.50" }}
+      },
+      "block_order": ["p1", "p2", "p3"]
+    },
+    "subscription": {
+      "type": "subscription-highlight",
+      "settings": {},
+      "blocks": {
+        "f1": { "type": "frequency", "settings": { "label": "Every week", "per_delivery": "€42/week" }},
+        "f2": { "type": "frequency", "settings": { "label": "Every 2 weeks", "per_delivery": "€42/2 weeks", "recommended": true }},
+        "f3": { "type": "frequency", "settings": { "label": "Every month", "per_delivery": "€42/month" }},
+        "f4": { "type": "frequency", "settings": { "label": "Every 2 months", "per_delivery": "€42/2 months" }},
+        "tr1": { "type": "trust", "settings": { "text": "Cancel or pause anytime — no commitment" }},
+        "tr2": { "type": "trust", "settings": { "text": "Free shipping on every delivery" }},
+        "tr3": { "type": "trust", "settings": { "text": "Skip a delivery whenever you want" }},
+        "tr4": { "type": "trust", "settings": { "text": "Change frequency or products anytime" }}
+      },
+      "block_order": ["f1", "f2", "f3", "f4", "tr1", "tr2", "tr3", "tr4"]
+    },
+    "social-proof": {
+      "type": "social-proof",
+      "settings": {
+        "heading": "People are loving us",
+        "subheading": "Share your GINGR experience",
+        "instagram_handle": "@gingr"
+      },
+      "blocks": {
+        "ig1": { "type": "photo" },
+        "ig2": { "type": "photo" },
+        "ig3": { "type": "photo" },
+        "ig4": { "type": "photo" },
+        "ig5": { "type": "photo" },
+        "ig6": { "type": "photo" },
+        "ig7": { "type": "photo" },
+        "ig8": { "type": "photo" }
+      },
+      "block_order": ["ig1", "ig2", "ig3", "ig4", "ig5", "ig6", "ig7", "ig8"]
+    },
+    "faq": {
+      "type": "faq",
+      "settings": {},
+      "blocks": {
+        "q1": { "type": "faq", "settings": { "question": "How should I take my GINGR shot?" }},
+        "q2": { "type": "faq", "settings": { "question": "Can I pause or cancel my subscription?" }},
+        "q3": { "type": "faq", "settings": { "question": "What's the shelf life?" }},
+        "q4": { "type": "faq", "settings": { "question": "Are GINGR shots vegan?" }}
+      },
+      "block_order": ["q1", "q2", "q3", "q4"]
+    }
+  },
+  "order": [
+    "hero",
+    "value-props",
+    "product-carousel",
+    "how-it-works",
+    "info-tabs",
+    "comparison",
+    "brand-story",
+    "ingredients",
+    "bundle-highlight",
+    "subscription",
+    "social-proof",
+    "faq"
+  ]
+}

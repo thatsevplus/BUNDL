@@ -1,0 +1,95 @@
+{
+  "404": {
+    "title": "Page not found",
+    "not_found": "The page you're looking for doesn't exist.",
+    "back_to_shopping": "Back to shopping"
+  },
+  "blog": {
+    "article_comments": "Comments",
+    "article_metadata_html": "{{ date }} by {{ author }}",
+    "comment_form_body": "Comment",
+    "comment_form_email": "Email",
+    "comment_form_name": "Name",
+    "comment_form_submit": "Post",
+    "comment_form_title": "Add a comment"
+  },
+  "cart": {
+    "title": "Your cart",
+    "checkout": "Checkout",
+    "update": "Update cart",
+    "remove": "Remove",
+    "empty": "Your cart is empty",
+    "start_shopping": "Start shopping",
+    "subtotal": "Subtotal",
+    "free_shipping_unlocked": "Free shipping unlocked!",
+    "free_shipping_away": "{{ amount }} away from free shipping",
+    "subscription_upsell": "Make this monthly & save 15%"
+  },
+  "product": {
+    "add_to_cart": "Add to cart",
+    "sold_out": "Sold out",
+    "choose_pack": "Choose your pack",
+    "save": "Save {{ percent }}%",
+    "one_time": "One-time",
+    "subscribe_save": "Subscribe & save",
+    "delivery_frequency": "Delivery frequency",
+    "pause_anytime": "Pause anytime",
+    "skip_week": "Skip a week",
+    "no_commitment": "No commitment",
+    "why_it_works": "Why it works",
+    "whats_inside": "What's inside",
+    "when_to_take": "When to take it",
+    "full_nutrition": "Full nutrition facts",
+    "benefits_coming": "Benefits information coming soon.",
+    "reviews_heading": "What customers say",
+    "reviews_empty": "Reviews will appear here once the reviews app is connected."
+  },
+  "collection": {
+    "products_count": "{{ count }} products",
+    "sort_by": "Sort by",
+    "sort_featured": "Featured",
+    "sort_best_selling": "Best selling",
+    "sort_az": "A-Z",
+    "sort_za": "Z-A",
+    "sort_price_asc": "Price: low to high",
+    "sort_price_desc": "Price: high to low",
+    "sort_newest": "Newest",
+    "sort_oldest": "Oldest",
+    "save_up_to": "Save up to {{ percent }}% with packs"
+  },
+  "search": {
+    "title": "Search",
+    "placeholder": "Search products...",
+    "submit": "Search",
+    "no_results_html": "No results found for \"{{ terms }}\"",
+    "results_for_html": "{{ count }} results for \"{{ terms }}\""
+  },
+  "collections": {
+    "title": "Collections"
+  },
+  "customers": {
+    "login": {
+      "email": "Email",
+      "password": "Password",
+      "submit": "Sign in",
+      "title": "Login"
+    }
+  },
+  "gift_card": {
+    "add_to_apple_wallet": "Add to Apple Wallet",
+    "card": "Gift card",
+    "expired": "This gift card has expired",
+    "expires_on": "Expires on {{ expires_on }}",
+    "use_at_checkout": "Use this gift card at checkout"
+  },
+  "password": {
+    "title": "This shop is private",
+    "password": "Password",
+    "enter": "Enter"
+  },
+  "general": {
+    "free_shipping": "Free shipping",
+    "secure_payment": "Secure payment",
+    "clean_ingredients": "Clean ingredients"
+  }
+}

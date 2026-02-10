@@ -1,0 +1,32 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-product-health",
+      "settings": {}
+    },
+    "benefits": {
+      "type": "product-benefits-ingredients",
+      "settings": {}
+    },
+    "routine": {
+      "type": "product-routine",
+      "settings": {},
+      "blocks": {
+        "m1": { "type": "routine_moment", "settings": { "emoji": "☀️", "title": "Morning", "description": "Start your day with a shot" }},
+        "m2": { "type": "routine_moment", "settings": { "emoji": "💪", "title": "Pre-workout", "description": "30 min before exercise" }},
+        "m3": { "type": "routine_moment", "settings": { "emoji": "🍽️", "title": "After meals", "description": "Support digestion" }}
+      },
+      "block_order": ["m1", "m2", "m3"]
+    },
+    "reviews": {
+      "type": "product-reviews-slot",
+      "settings": {}
+    }
+  },
+  "order": [
+    "main",
+    "benefits",
+    "routine",
+    "reviews"
+  ]
+}

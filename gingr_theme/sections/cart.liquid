@@ -1,0 +1,62 @@
+{%- comment -%}
+  GINGR — Cart page (fallback if cart drawer disabled)
+{%- endcomment -%}
+
+<section class="section-padding">
+  <div class="gingr-container max-w-3xl">
+    <h1 class="text-2xl font-bold text-gingr-navy mb-8">Your cart</h1>
+
+    {% if cart.item_count == 0 %}
+      <div class="text-center py-16">
+        <p class="text-gray-500 mb-4">Your cart is empty</p>
+        <a href="{{ routes.all_products_collection_url }}" class="btn-primary">Start shopping</a>
+      </div>
+    {% else %}
+      <form action="{{ routes.cart_url }}" method="post">
+        <ul class="divide-y divide-gray-100">
+          {% for item in cart.items %}
+            <li class="flex gap-4 py-4">
+              {% if item.image %}
+                <div class="w-20 h-20 rounded-lg overflow-hidden bg-gray-50 flex-shrink-0">
+                  {{ item.image | image_url: width: 160 | image_tag: class: 'w-full h-full object-cover', loading: 'lazy' }}
+                </div>
+              {% endif %}
+              <div class="flex-1">
+                <a href="{{ item.url }}" class="text-sm font-medium text-gingr-font hover:text-gingr-navy no-underline">{{ item.product.title }}</a>
+                {% if item.variant.title != 'Default Title' %}
+                  <p class="text-xs text-gray-500">{{ item.variant.title }}</p>
+                {% endif %}
+                <div class="flex items-center gap-2 mt-2">
+                  <input type="number" name="updates[]" value="{{ item.quantity }}" min="0" class="w-16 text-center text-sm border border-gray-200 rounded-lg px-2 py-1" aria-label="Quantity">
+                </div>
+              </div>
+              <p class="text-sm font-bold text-gingr-navy">{{ item.final_line_price | money }}</p>
+            </li>
+          {% endfor %}
+        </ul>
+
+        <div class="border-t border-gray-100 pt-4 mt-4">
+          <div class="flex justify-between items-center mb-4">
+            <span class="text-sm text-gray-500">Subtotal</span>
+            <span class="text-xl font-bold text-gingr-navy">{{ cart.total_price | money }}</span>
+          </div>
+          <div class="flex gap-3">
+            <button type="submit" name="update" class="btn-outline flex-1">Update cart</button>
+            <button type="submit" name="checkout" class="btn-primary flex-1">Checkout</button>
+          </div>
+        </div>
+      </form>
+    {% endif %}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Cart",
+  "tag": "section",
+  "settings": [],
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  }
+}
+{% endschema %}

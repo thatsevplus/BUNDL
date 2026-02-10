@@ -1,0 +1,48 @@
+{%- comment -%}
+  GINGR — Search results
+{%- endcomment -%}
+
+<section class="section-padding">
+  <div class="gingr-container max-w-4xl">
+    <h1 class="text-2xl font-bold text-gingr-navy mb-6">{{ 'search.title' | t }}</h1>
+
+    <form action="{{ routes.search_url }}" method="get" class="mb-8">
+      <div class="flex gap-2">
+        <input type="search" name="q" value="{{ search.terms | escape }}" placeholder="{{ 'search.placeholder' | t }}"
+          class="flex-1 border border-gray-200 rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-gingr-navy focus:border-transparent">
+        <button type="submit" class="btn-primary">{{ 'search.submit' | t }}</button>
+      </div>
+    </form>
+
+    {% if search.performed %}
+      {% if search.results_count > 0 %}
+        <p class="text-sm text-gray-500 mb-6">{{ 'search.results_for_html' | t: terms: search.terms, count: search.results_count }}</p>
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          {% for item in search.results %}
+            {% if item.object_type == 'product' %}
+              {% render 'product-card', product: item %}
+            {% else %}
+              <a href="{{ item.url }}" class="block p-4 rounded-xl border border-gray-100 hover:border-gingr-navy/20 transition-colors no-underline">
+                <p class="text-sm font-medium text-gingr-font">{{ item.title }}</p>
+                <p class="text-xs text-gray-500 mt-1">{{ item.content | strip_html | truncate: 100 }}</p>
+              </a>
+            {% endif %}
+          {% endfor %}
+        </div>
+      {% else %}
+        <p class="text-sm text-gray-500">{{ 'search.no_results_html' | t: terms: search.terms }}</p>
+      {% endif %}
+    {% endif %}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Search",
+  "tag": "section",
+  "settings": [],
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  }
+}
+{% endschema %}

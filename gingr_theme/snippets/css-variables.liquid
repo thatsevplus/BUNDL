@@ -1,0 +1,70 @@
+{% style %}
+  {% # Primary font %}
+  {{ settings.type_primary_font | font_face: font_display: 'swap' }}
+  {{ settings.type_primary_font | font_modify: 'weight', 'bold' | font_face: font_display: 'swap' }}
+
+  {% # Secondary font %}
+  {{ settings.type_secondary_font | font_face: font_display: 'swap' }}
+
+  :root {
+    /* Fonts */
+    --font-primary--family: {{ settings.type_primary_font.family }}, {{ settings.type_primary_font.fallback_families }};
+    --font-primary--style: {{ settings.type_primary_font.style }};
+    --font-primary--weight: {{ settings.type_primary_font.weight }};
+    --font-secondary--family: {{ settings.type_secondary_font.family }}, {{ settings.type_secondary_font.fallback_families }};
+    --heading-scale: {{ settings.heading_scale | default: 100 }};
+
+    /* Layout */
+    --page-width: {{ settings.max_page_width }};
+    --page-margin: {{ settings.min_page_margin }}px;
+
+    /* Brand */
+    --color-primary: {{ settings.color_primary }};
+    --color-accent: {{ settings.color_accent }};
+
+    /* Text */
+    --text-heading: {{ settings.text_heading_color | default: '#ffffff' }};
+    --text-subheading: {{ settings.text_subheading_color | default: '#a3a3a3' }};
+    --text-body: {{ settings.text_body_color | default: '#e5e5e5' }};
+
+    /* Buttons */
+    --button-color: {{ settings.button_color | default: '#52b788' }};
+    --button-text: {{ settings.button_text_color | default: '#ffffff' }};
+    --style-border-radius-buttons: {{ settings.button_corner_radius }}px;
+
+    /* Background */
+    --color-background: {{ settings.background_color }};
+    {% if settings.background_gradient_enabled %}
+      --bg-body: linear-gradient({{ settings.background_gradient_direction }}, {{ settings.background_color }}, {{ settings.background_gradient_end }});
+    {% else %}
+      --bg-body: {{ settings.background_color }};
+    {% endif %}
+  }
+
+  /* Global text colors — applied to all sections */
+  h1, h2, h3, h4, h5, h6 { color: var(--text-heading); }
+  p, li, span, label { color: var(--text-body); }
+
+  /* Brand utility overrides */
+  .bg-gingr-navy { background-color: var(--color-primary) !important; }
+  .bg-gingr-navy\/20 { background-color: color-mix(in srgb, var(--color-primary) 20%, transparent) !important; }
+  .text-gingr-navy { color: var(--color-primary) !important; }
+  .text-gingr-navy\/20 { color: color-mix(in srgb, var(--color-primary) 20%, transparent) !important; }
+  .text-gingr-navy\/60 { color: color-mix(in srgb, var(--color-primary) 60%, transparent) !important; }
+  .text-gingr-navy\/70 { color: color-mix(in srgb, var(--color-primary) 70%, transparent) !important; }
+  .border-gingr-navy { border-color: var(--color-primary) !important; }
+  .border-gingr-navy\/50 { border-color: color-mix(in srgb, var(--color-primary) 50%, transparent) !important; }
+  .ring-gingr-navy { --tw-ring-color: var(--color-primary) !important; }
+  .focus\:ring-gingr-navy:focus { --tw-ring-color: var(--color-primary) !important; }
+  .hover\:border-gingr-navy\/20:hover { border-color: color-mix(in srgb, var(--color-primary) 20%, transparent) !important; }
+  .hover\:border-gingr-navy\/50:hover { border-color: color-mix(in srgb, var(--color-primary) 50%, transparent) !important; }
+  .hover\:text-gingr-navy:hover { color: var(--color-primary) !important; }
+  [data-carousel-dot].bg-gingr-navy { background-color: var(--color-primary) !important; }
+
+  /* Text utility classes */
+  .text-heading { color: var(--text-heading) !important; }
+  .text-subheading { color: var(--text-subheading) !important; }
+  .text-body { color: var(--text-body) !important; }
+  .text-accent { color: var(--color-accent) !important; }
+  .hover\:text-accent:hover { color: var(--color-accent) !important; }
+{% endstyle %}

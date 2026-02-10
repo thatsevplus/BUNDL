@@ -1,0 +1,295 @@
+{%- comment -%}
+  GINGR — Subscription section v2
+  Conversion-optimized: frequency selector, price anchoring,
+  savings highlight, trust signals, one-time vs subscribe toggle.
+{%- endcomment -%}
+
+<section class="section-padding" data-section-id="{{ section.id }}">
+  <div class="gingr-container">
+    <div class="max-w-4xl mx-auto">
+
+      {%- comment -%} Section heading {%- endcomment -%}
+      <div class="text-center mb-10">
+        {% if section.settings.eyebrow != blank %}
+          <p class="text-xs font-bold uppercase tracking-[0.2em] text-subheading mb-3">{{ section.settings.eyebrow }}</p>
+        {% endif %}
+        <h2 class="text-3xl md:text-4xl font-bold">{{ section.settings.heading }}</h2>
+        {% if section.settings.description != blank %}
+          <p class="text-base text-subheading mt-3 max-w-lg mx-auto">{{ section.settings.description }}</p>
+        {% endif %}
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-5 gap-6 items-start">
+
+        {%- comment -%} Left: subscription builder (3 cols) {%- endcomment -%}
+        <div class="lg:col-span-3 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-sm p-6 md:p-8" data-sub-builder>
+
+          {%- comment -%} Step 1 — Purchase type toggle {%- endcomment -%}
+          <div class="mb-6">
+            <p class="text-xs font-bold uppercase tracking-wider text-subheading mb-3">How would you like to buy?</p>
+            <div class="grid grid-cols-2 gap-3">
+              <button
+                class="relative px-4 py-3 rounded-xl border-2 text-sm font-semibold transition-all text-center border-white/10 text-subheading hover:border-white/20"
+                data-purchase-type="onetime"
+              >
+                One-time
+              </button>
+              <button
+                class="relative px-4 py-3 rounded-xl border-2 text-sm font-semibold transition-all text-center"
+                style="border-color:var(--color-accent);background:color-mix(in srgb, var(--color-accent) 10%, transparent);color:var(--color-accent);"
+                data-purchase-type="subscribe"
+              >
+                Subscribe
+                {% if section.settings.discount_label != blank %}
+                  <span class="absolute -top-2.5 right-3 text-[10px] font-bold px-2 py-0.5 rounded-full text-black" style="background:var(--color-accent);">{{ section.settings.discount_label }}</span>
+                {% endif %}
+              </button>
+            </div>
+          </div>
+
+          {%- comment -%} Step 2 — Frequency selector (shown when subscribe is active) {%- endcomment -%}
+          <div data-frequency-panel>
+            <p class="text-xs font-bold uppercase tracking-wider text-subheading mb-3">Delivery frequency</p>
+            <div class="space-y-2">
+              {% assign freq_blocks = section.blocks | where: "type", "frequency" %}
+              {% for block in freq_blocks %}
+                <label
+                  class="flex items-center justify-between px-4 py-3 rounded-xl border cursor-pointer transition-all {% unless block.settings.recommended %}border-white/10 hover:border-white/20{% endunless %}"
+                  {% if block.settings.recommended %}style="border-color:var(--color-accent);background:color-mix(in srgb, var(--color-accent) 5%, transparent);"{% endif %}
+                  data-frequency-option
+                  {{ block.shopify_attributes }}
+                >
+                  <div class="flex items-center gap-3">
+                    <div class="w-4 h-4 rounded-full border-2 flex items-center justify-center" style="border-color:{% if block.settings.recommended %}var(--color-accent){% else %}rgba(255,255,255,0.2){% endif %};" data-frequency-radio>
+                      {% if block.settings.recommended %}
+                        <div class="w-2 h-2 rounded-full" style="background:var(--color-accent);"></div>
+                      {% endif %}
+                    </div>
+                    <div>
+                      <span class="text-sm font-semibold">{{ block.settings.label }}</span>
+                      {% if block.settings.recommended %}
+                        <span class="ml-2 text-[10px] font-bold px-2 py-0.5 rounded-full" style="background:color-mix(in srgb, var(--color-accent) 20%, transparent);color:var(--color-accent);">{{ block.settings.badge | default: 'Most chosen' }}</span>
+                      {% endif %}
+                    </div>
+                  </div>
+                  {% if block.settings.per_delivery != blank %}
+                    <span class="text-sm font-bold text-subheading">{{ block.settings.per_delivery }}</span>
+                  {% endif %}
+                </label>
+              {% endfor %}
+            </div>
+          </div>
+
+          {%- comment -%} Price summary {%- endcomment -%}
+          <div class="mt-6 pt-6 border-t border-white/10">
+            <div class="flex items-center justify-between mb-1">
+              <span class="text-sm text-subheading">Regular price</span>
+              <span class="text-sm text-subheading line-through">{{ section.settings.regular_price }}</span>
+            </div>
+            <div class="flex items-center justify-between">
+              <span class="text-sm font-semibold">Your price</span>
+              <span class="text-lg font-bold" style="color:var(--color-accent);">{{ section.settings.subscribe_price }}</span>
+            </div>
+            {% if section.settings.savings_text != blank %}
+              <p class="text-xs mt-2 font-medium" style="color:var(--color-accent);">{{ section.settings.savings_text }}</p>
+            {% endif %}
+          </div>
+
+          {%- comment -%} CTA {%- endcomment -%}
+          {% if section.settings.cta_text != blank %}
+            <a href="{{ section.settings.cta_link }}" class="btn-secondary mt-6 w-full text-center no-underline text-base py-4">
+              {{ section.settings.cta_text }}
+            </a>
+          {% endif %}
+        </div>
+
+        {%- comment -%} Right: trust signals + image (2 cols) {%- endcomment -%}
+        <div class="lg:col-span-2 space-y-5">
+          {%- comment -%} Image {%- endcomment -%}
+          {% if section.settings.image %}
+            <div class="rounded-2xl overflow-hidden border border-white/10">
+              {{ section.settings.image | image_url: width: 600 | image_tag:
+                class: 'w-full h-auto',
+                loading: 'lazy'
+              }}
+            </div>
+          {% endif %}
+
+          {%- comment -%} Trust signals {%- endcomment -%}
+          {% assign trust_blocks = section.blocks | where: "type", "trust" %}
+          {% if trust_blocks.size > 0 %}
+            <div class="rounded-2xl border border-white/10 bg-white/5 p-5 space-y-3">
+              {% for block in trust_blocks %}
+                <div class="flex items-start gap-3" {{ block.shopify_attributes }}>
+                  <span class="flex-shrink-0 w-5 h-5 rounded-full flex items-center justify-center mt-0.5" style="background:color-mix(in srgb, var(--color-accent) 20%, transparent);color:var(--color-accent);">
+                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="m4.5 12.75 6 6 9-13.5"/></svg>
+                  </span>
+                  <span class="text-sm">{{ block.settings.text }}</span>
+                </div>
+              {% endfor %}
+            </div>
+          {% endif %}
+
+          {%- comment -%} Subscriber count social proof {%- endcomment -%}
+          {% if section.settings.subscriber_count != blank %}
+            <div class="text-center py-3">
+              <p class="text-xs text-subheading">
+                <span class="font-semibold">{{ section.settings.subscriber_count }}</span> {{ section.settings.subscriber_label | default: 'active subscribers' }}
+              </p>
+            </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Subscription",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "Subscribe & save"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Make it a daily habit"
+    },
+    {
+      "type": "textarea",
+      "id": "description",
+      "label": "Description",
+      "default": "Get your ginger shots delivered on your schedule. Save on every order."
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Side image"
+    },
+    {
+      "type": "header",
+      "content": "Pricing"
+    },
+    {
+      "type": "text",
+      "id": "regular_price",
+      "label": "Regular price (display)",
+      "default": "€4.50 / shot"
+    },
+    {
+      "type": "text",
+      "id": "subscribe_price",
+      "label": "Subscription price (display)",
+      "default": "€3.83 / shot"
+    },
+    {
+      "type": "text",
+      "id": "savings_text",
+      "label": "Savings text",
+      "default": "You save €8.04 per month with Subscribe"
+    },
+    {
+      "type": "text",
+      "id": "discount_label",
+      "label": "Discount badge on subscribe toggle",
+      "default": "Save 15%"
+    },
+    {
+      "type": "header",
+      "content": "CTA"
+    },
+    {
+      "type": "text",
+      "id": "cta_text",
+      "label": "Button text",
+      "default": "Start my subscription"
+    },
+    {
+      "type": "url",
+      "id": "cta_link",
+      "label": "Button link"
+    },
+    {
+      "type": "header",
+      "content": "Social proof"
+    },
+    {
+      "type": "text",
+      "id": "subscriber_count",
+      "label": "Subscriber count",
+      "default": "2,400+"
+    },
+    {
+      "type": "text",
+      "id": "subscriber_label",
+      "label": "Subscriber label",
+      "default": "active subscribers"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "frequency",
+      "name": "Delivery frequency",
+      "settings": [
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Frequency label",
+          "default": "Every month"
+        },
+        {
+          "type": "text",
+          "id": "per_delivery",
+          "label": "Price per delivery",
+          "default": "€42/delivery"
+        },
+        {
+          "type": "text",
+          "id": "badge",
+          "label": "Badge text (recommended only)",
+          "default": "Most chosen"
+        },
+        {
+          "type": "checkbox",
+          "id": "recommended",
+          "label": "Recommended option",
+          "default": false
+        }
+      ]
+    },
+    {
+      "type": "trust",
+      "name": "Trust signal",
+      "settings": [
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Text",
+          "default": "Cancel anytime — no commitment"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Subscription",
+      "blocks": [
+        { "type": "frequency", "settings": { "label": "Every week", "per_delivery": "€42/week" }},
+        { "type": "frequency", "settings": { "label": "Every 2 weeks", "per_delivery": "€42/2 weeks", "recommended": true }},
+        { "type": "frequency", "settings": { "label": "Every month", "per_delivery": "€42/month" }},
+        { "type": "frequency", "settings": { "label": "Every 2 months", "per_delivery": "€42/2 months" }},
+        { "type": "trust", "settings": { "text": "Cancel or pause anytime — no commitment" }},
+        { "type": "trust", "settings": { "text": "Free shipping on every subscription delivery" }},
+        { "type": "trust", "settings": { "text": "Skip a delivery whenever you want" }},
+        { "type": "trust", "settings": { "text": "Change frequency or products anytime" }}
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,8 @@
+extends: theme-check:recommended
+
+ParserBlockingScriptTag:
+  enabled: false
+
+OrphanedSnippet:
+  enabled: false
+

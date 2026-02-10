@@ -1,0 +1,43 @@
+{%- comment -%}
+  Renders the subscription toggle and frequency selector.
+  Works with Shopify native selling plans.
+  Usage: {% render 'subscription-slot', product: product %}
+{%- endcomment -%}
+
+{% if product.selling_plan_groups.size > 0 %}
+  {% assign group = product.selling_plan_groups | first %}
+
+  <div class="mt-4 p-4 bg-white rounded-lg border border-gray-200" data-subscription-toggle>
+    {%- comment -%} Toggle buttons {%- endcomment -%}
+    <div class="flex rounded-lg overflow-hidden border border-gray-200 mb-3">
+      <button type="button" data-sub-onetime
+        class="flex-1 py-2 px-3 text-sm font-medium bg-white text-gingr-navy transition-colors">
+        One-time
+      </button>
+      <button type="button" data-sub-subscribe
+        class="flex-1 py-2 px-3 text-sm font-medium bg-gingr-navy text-white transition-colors">
+        Subscribe & save
+      </button>
+    </div>
+
+    {%- comment -%} Frequency selector {%- endcomment -%}
+    <div data-sub-frequency-wrap>
+      <label class="text-xs text-gray-500 mb-1 block">Delivery frequency</label>
+      <select data-sub-frequency class="w-full text-sm border border-gray-200 rounded-lg px-3 py-2 focus:ring-2 focus:ring-gingr-navy focus:border-transparent">
+        {% for plan in group.selling_plans %}
+          <option value="{{ plan.id }}">{{ plan.name }}</option>
+        {% endfor %}
+      </select>
+      <div class="flex gap-3 mt-2 text-xs text-gray-500">
+        <span>Pause anytime</span>
+        <span>&middot;</span>
+        <span>Skip a week</span>
+        <span>&middot;</span>
+        <span>No commitment</span>
+      </div>
+    </div>
+
+    {%- comment -%} Hidden selling plan input {%- endcomment -%}
+    <input type="hidden" name="selling_plan" value="{{ group.selling_plans.first.id }}">
+  </div>
+{% endif %}

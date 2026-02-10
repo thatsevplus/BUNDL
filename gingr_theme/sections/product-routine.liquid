@@ -1,0 +1,66 @@
+{%- comment -%}
+  GINGR — How to use / Routine section
+  Pulls from health.how_to_use metafield
+{%- endcomment -%}
+
+{% if product.metafields.health.how_to_use.value %}
+<section class="section-padding">
+  <div class="gingr-container max-w-3xl">
+    <h2 class="text-xl font-bold text-gingr-navy mb-6 text-center">When to take it</h2>
+
+    <div class="prose prose-sm text-gray-700 mx-auto">
+      {{ product.metafields.health.how_to_use.value }}
+    </div>
+
+    {%- comment -%} Quick routine cards {%- endcomment -%}
+    {% if section.blocks.size > 0 %}
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-8">
+        {% for block in section.blocks %}
+          <div class="text-center p-4 rounded-xl bg-white border border-gray-100" {{ block.shopify_attributes }}>
+            <p class="text-2xl mb-2">{{ block.settings.emoji }}</p>
+            <p class="text-sm font-semibold text-gingr-navy">{{ block.settings.title }}</p>
+            <p class="text-xs text-gray-500 mt-1">{{ block.settings.description }}</p>
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+  </div>
+</section>
+{% endif %}
+
+{% schema %}
+{
+  "name": "Product Routine",
+  "tag": "section",
+  "settings": [],
+  "blocks": [
+    {
+      "type": "routine_moment",
+      "name": "Routine moment",
+      "settings": [
+        {
+          "type": "text",
+          "id": "emoji",
+          "label": "Emoji",
+          "default": "☀️"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "default": "Morning"
+        },
+        {
+          "type": "text",
+          "id": "description",
+          "label": "Description",
+          "default": "Start your day with a shot"
+        }
+      ]
+    }
+  ],
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  }
+}
+{% endschema %}

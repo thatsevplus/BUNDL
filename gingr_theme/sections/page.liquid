@@ -1,0 +1,19 @@
+<section class="section-padding">
+  <div class="gingr-container max-w-3xl">
+    <h1 class="text-2xl font-bold text-gingr-navy mb-6">{{ page.title }}</h1>
+    <div class="prose prose-sm text-gray-700">
+      {{ page.content }}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Page",
+  "tag": "section",
+  "settings": [],
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  }
+}
+{% endschema %}

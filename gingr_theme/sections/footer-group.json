@@ -1,0 +1,18 @@
+{
+  "type": "footer",
+  "name": "Footer",
+  "sections": {
+    "pages-grid": {
+      "type": "pages-grid",
+      "settings": {}
+    },
+    "footer": {
+      "type": "footer",
+      "settings": {}
+    }
+  },
+  "order": [
+    "pages-grid",
+    "footer"
+  ]
+}

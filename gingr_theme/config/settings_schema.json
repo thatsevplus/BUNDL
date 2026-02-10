@@ -1,0 +1,304 @@
+[
+  {
+    "name": "theme_info",
+    "theme_name": "GINGR",
+    "theme_version": "2.0.0",
+    "theme_author": "GINGR",
+    "theme_documentation_url": "https://gingr.com",
+    "theme_support_url": "https://gingr.com/support"
+  },
+  {
+    "name": "t:general.typography",
+    "settings": [
+      {
+        "type": "header",
+        "content": "t:general.fonts"
+      },
+      {
+        "type": "font_picker",
+        "id": "type_primary_font",
+        "default": "work_sans_n6",
+        "label": "t:general.primary"
+      },
+      {
+        "type": "font_picker",
+        "id": "type_secondary_font",
+        "default": "work_sans_n4",
+        "label": "t:general.secondary"
+      },
+      {
+        "type": "range",
+        "id": "heading_scale",
+        "min": 80,
+        "max": 150,
+        "step": 5,
+        "unit": "%",
+        "label": "Heading size scale",
+        "default": 100
+      }
+    ]
+  },
+  {
+    "name": "t:general.layout",
+    "settings": [
+      {
+        "type": "select",
+        "id": "max_page_width",
+        "label": "t:labels.page_width",
+        "options": [
+          { "value": "80rem", "label": "t:options.page_width.narrow" },
+          { "value": "90rem", "label": "t:options.page_width.wide" }
+        ],
+        "default": "80rem"
+      },
+      {
+        "type": "range",
+        "id": "min_page_margin",
+        "min": 10,
+        "max": 100,
+        "step": 1,
+        "unit": "px",
+        "label": "t:labels.page_margin",
+        "default": 16
+      }
+    ]
+  },
+  {
+    "name": "t:general.colors",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Brand colors"
+      },
+      {
+        "type": "color",
+        "id": "color_primary",
+        "default": "#52b788",
+        "label": "Primary"
+      },
+      {
+        "type": "color",
+        "id": "color_accent",
+        "default": "#ffe14e",
+        "label": "Accent"
+      },
+      {
+        "type": "header",
+        "content": "Background"
+      },
+      {
+        "type": "color",
+        "id": "background_color",
+        "default": "#0b0f0e",
+        "label": "Background color"
+      },
+      {
+        "type": "checkbox",
+        "id": "background_gradient_enabled",
+        "label": "Enable gradient background",
+        "default": false
+      },
+      {
+        "type": "color",
+        "id": "background_gradient_end",
+        "default": "#1a1a2e",
+        "label": "Gradient end color"
+      },
+      {
+        "type": "select",
+        "id": "background_gradient_direction",
+        "label": "Gradient direction",
+        "options": [
+          { "value": "to bottom", "label": "Top to bottom" },
+          { "value": "to right", "label": "Left to right" },
+          { "value": "to bottom right", "label": "Diagonal" },
+          { "value": "135deg", "label": "Diagonal (alt)" }
+        ],
+        "default": "to bottom"
+      },
+      {
+        "type": "header",
+        "content": "Text"
+      },
+      {
+        "type": "color",
+        "id": "text_heading_color",
+        "default": "#ffffff",
+        "label": "Heading text"
+      },
+      {
+        "type": "color",
+        "id": "text_subheading_color",
+        "default": "#a3a3a3",
+        "label": "Subheading text"
+      },
+      {
+        "type": "color",
+        "id": "text_body_color",
+        "default": "#e5e5e5",
+        "label": "Body text"
+      },
+      {
+        "type": "header",
+        "content": "Buttons"
+      },
+      {
+        "type": "color",
+        "id": "button_color",
+        "default": "#52b788",
+        "label": "Button color"
+      },
+      {
+        "type": "color",
+        "id": "button_text_color",
+        "default": "#ffffff",
+        "label": "Button text"
+      },
+      {
+        "type": "range",
+        "id": "button_corner_radius",
+        "min": 0,
+        "max": 24,
+        "step": 1,
+        "unit": "px",
+        "label": "Button corner radius",
+        "default": 8
+      }
+    ]
+  },
+  {
+    "name": "Cart",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "cart_drawer_enabled",
+        "label": "Enable cart drawer",
+        "default": true
+      },
+      {
+        "type": "range",
+        "id": "free_shipping_threshold",
+        "min": 0,
+        "max": 200,
+        "step": 5,
+        "unit": "€",
+        "label": "Free shipping threshold (0 = disabled)",
+        "default": 50
+      },
+      {
+        "type": "header",
+        "content": "Bundle discounts"
+      },
+      {
+        "type": "checkbox",
+        "id": "bundle_discount_enabled",
+        "label": "Auto-apply bundle discounts in cart",
+        "default": true
+      },
+      {
+        "type": "range",
+        "id": "bundle_tier_1_qty",
+        "min": 2,
+        "max": 12,
+        "step": 1,
+        "label": "Tier 1 — minimum items",
+        "default": 6
+      },
+      {
+        "type": "range",
+        "id": "bundle_tier_1_discount",
+        "min": 0,
+        "max": 50,
+        "step": 1,
+        "unit": "%",
+        "label": "Tier 1 — discount",
+        "default": 10
+      },
+      {
+        "type": "range",
+        "id": "bundle_tier_2_qty",
+        "min": 6,
+        "max": 24,
+        "step": 1,
+        "label": "Tier 2 — minimum items",
+        "default": 12
+      },
+      {
+        "type": "range",
+        "id": "bundle_tier_2_discount",
+        "min": 0,
+        "max": 50,
+        "step": 1,
+        "unit": "%",
+        "label": "Tier 2 — discount",
+        "default": 20
+      },
+      {
+        "type": "range",
+        "id": "bundle_tier_3_qty",
+        "min": 12,
+        "max": 48,
+        "step": 1,
+        "label": "Tier 3 — minimum items",
+        "default": 24
+      },
+      {
+        "type": "range",
+        "id": "bundle_tier_3_discount",
+        "min": 0,
+        "max": 50,
+        "step": 1,
+        "unit": "%",
+        "label": "Tier 3 — discount",
+        "default": 30
+      },
+      {
+        "type": "header",
+        "content": "Cart upsell"
+      },
+      {
+        "type": "checkbox",
+        "id": "upsell_enabled",
+        "label": "Show upsell product in cart",
+        "default": true
+      },
+      {
+        "type": "product",
+        "id": "upsell_product",
+        "label": "Upsell product (e.g. tote bag)"
+      },
+      {
+        "type": "text",
+        "id": "upsell_heading",
+        "label": "Upsell heading",
+        "default": "Complete your order"
+      },
+      {
+        "type": "text",
+        "id": "upsell_description",
+        "label": "Upsell description",
+        "default": "Add our GINGR tote bag"
+      }
+    ]
+  },
+  {
+    "name": "Social",
+    "settings": [
+      {
+        "type": "text",
+        "id": "social_instagram",
+        "label": "Instagram URL"
+      },
+      {
+        "type": "text",
+        "id": "social_tiktok",
+        "label": "TikTok URL"
+      },
+      {
+        "type": "text",
+        "id": "social_facebook",
+        "label": "Facebook URL"
+      }
+    ]
+  }
+]

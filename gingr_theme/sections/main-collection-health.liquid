@@ -1,0 +1,137 @@
+{%- comment -%}
+  GINGR — Main Collection Section
+  Grid with product cards, native filtering/sorting
+{%- endcomment -%}
+
+<section class="section-padding" data-section-id="{{ section.id }}">
+  <div class="gingr-container">
+
+    {%- comment -%} Collection header {%- endcomment -%}
+    <div class="mb-8">
+      {% if collection.metafields.health.collection_hero.value %}
+        <div class="rounded-2xl overflow-hidden mb-6 aspect-[3/1]">
+          {{ collection.metafields.health.collection_hero.value | image_url: width: 1400 | image_tag:
+            class: 'w-full h-full object-cover',
+            loading: 'eager'
+          }}
+        </div>
+      {% endif %}
+
+      <h1 class="text-2xl md:text-3xl font-bold text-gingr-navy">{{ collection.title }}</h1>
+
+      {% if collection.metafields.health.collection_intro.value %}
+        <div class="prose prose-sm text-gray-600 mt-2 max-w-2xl">
+          {{ collection.metafields.health.collection_intro.value }}
+        </div>
+      {% elsif collection.description != blank %}
+        <p class="text-sm text-gray-600 mt-2 max-w-2xl">{{ collection.description }}</p>
+      {% endif %}
+    </div>
+
+    {%- comment -%} Filter & sort bar {%- endcomment -%}
+    <div class="flex flex-wrap items-center justify-between gap-4 mb-6 pb-4 border-b border-gray-100">
+      <p class="text-sm text-gray-500">{{ collection.products_count }} products</p>
+
+      {%- comment -%} Native sort {%- endcomment -%}
+      <div class="flex items-center gap-2">
+        <label for="sort-by" class="text-sm text-gray-500">Sort by</label>
+        <select id="sort-by" class="text-sm border border-gray-200 rounded-lg px-3 py-1.5 focus:ring-2 focus:ring-gingr-navy focus:border-transparent"
+          onchange="window.location.href = this.value"
+        >
+          {% assign sort_options = 'manual,best-selling,title-ascending,title-descending,price-ascending,price-descending,created-ascending,created-descending' | split: ',' %}
+          {% for option in sort_options %}
+            <option value="{{ collection.url }}?sort_by={{ option }}"
+              {% if collection.sort_by == option %}selected{% endif %}
+            >
+              {% case option %}
+                {% when 'manual' %}Featured
+                {% when 'best-selling' %}Best selling
+                {% when 'title-ascending' %}A-Z
+                {% when 'title-descending' %}Z-A
+                {% when 'price-ascending' %}Price: low to high
+                {% when 'price-descending' %}Price: high to low
+                {% when 'created-ascending' %}Oldest
+                {% when 'created-descending' %}Newest
+              {% endcase %}
+            </option>
+          {% endfor %}
+        </select>
+      </div>
+    </div>
+
+    {%- comment -%} Product grid {%- endcomment -%}
+    {% paginate collection.products by section.settings.products_per_page %}
+      <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-{{ section.settings.columns }} gap-4 md:gap-6">
+        {% for product in collection.products %}
+          {% render 'product-card', product: product %}
+        {% endfor %}
+      </div>
+
+      {%- comment -%} Pagination {%- endcomment -%}
+      {% if paginate.pages > 1 %}
+        <nav class="flex justify-center items-center gap-2 mt-10" aria-label="Pagination">
+          {% if paginate.previous %}
+            <a href="{{ paginate.previous.url }}" class="px-3 py-2 rounded-lg text-sm text-gingr-navy hover:bg-gray-100 no-underline">
+              &larr; Prev
+            </a>
+          {% endif %}
+
+          {% for part in paginate.parts %}
+            {% if part.is_link %}
+              <a href="{{ part.url }}" class="w-9 h-9 flex items-center justify-center rounded-lg text-sm text-gingr-navy hover:bg-gray-100 no-underline">
+                {{ part.title }}
+              </a>
+            {% else %}
+              {% if part.title == paginate.current_page %}
+                <span class="w-9 h-9 flex items-center justify-center rounded-lg text-sm bg-gingr-navy text-white font-medium">
+                  {{ part.title }}
+                </span>
+              {% else %}
+                <span class="w-9 h-9 flex items-center justify-center text-sm text-gray-400">
+                  {{ part.title }}
+                </span>
+              {% endif %}
+            {% endif %}
+          {% endfor %}
+
+          {% if paginate.next %}
+            <a href="{{ paginate.next.url }}" class="px-3 py-2 rounded-lg text-sm text-gingr-navy hover:bg-gray-100 no-underline">
+              Next &rarr;
+            </a>
+          {% endif %}
+        </nav>
+      {% endif %}
+    {% endpaginate %}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Collection Main",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "range",
+      "id": "products_per_page",
+      "min": 8,
+      "max": 48,
+      "step": 4,
+      "label": "Products per page",
+      "default": 16
+    },
+    {
+      "type": "select",
+      "id": "columns",
+      "label": "Desktop columns",
+      "options": [
+        { "value": "3", "label": "3" },
+        { "value": "4", "label": "4" }
+      ],
+      "default": "4"
+    }
+  ],
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  }
+}
+{% endschema %}
